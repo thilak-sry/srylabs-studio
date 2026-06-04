@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Lumina AI | Immersive Image Workflow</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap');
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .comparison-slider { position: relative; overflow: hidden; user-select: none; }
+        .comparison-handle { position: absolute; top: 0; bottom: 0; width: 2px; background: white; cursor: ew-resize; z-index: 10; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
+        .comparison-handle::after { 
+            content: ''; 
+            position: absolute; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            width: 32px; 
+            height: 32px; 
+            background: white; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%234648d4' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m18 8 4 4-4 4M6 8l-4 4 4 4'/%3E%3C/svg%3E"); 
+            background-repeat: no-repeat; 
+            background-position: center; 
+        }
+        .comparison-overlay { position: absolute; top: 0; left: 0; height: 100%; width: 50%; overflow: hidden; }
+        .glass-morphism { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+        .shimmer-btn { position: relative; overflow: hidden; }
+        .shimmer-btn::after { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(45deg, transparent, rgba(255,255,255,0.2), transparent); transform: rotate(45deg); animation: shimmer 3s infinite; }
+        @keyframes shimmer { 0% { transform: translateX(-100%) rotate(45deg); } 100% { transform: translateX(100%) rotate(45deg); } }
+    </style>
+</head>
+<body class="bg-surface-container text-on-surface font-body-md" style="background-color: #f0edec;">
+<div class="flex h-screen w-full overflow-hidden">
+<!-- Sidebar -->
+<aside class="w-[240px] h-full flex flex-col bg-surface-container fixed left-0 top-0 z-50">
+<div class="p-6 mb-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-2xl text-primary" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<h1 class="font-headline-md text-xl font-bold">Flow</h1>
+<span class="bg-[#f0dbff] text-[#6900b3] text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ml-1">Pro</span>
+</div>
+</div>
+<nav class="flex-1 px-3 space-y-1">
+<a class="flex items-center gap-3 px-4 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">grid_view</span>
+<span class="text-[14px]">Home</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 rounded-lg sidebar-active bg-secondary-container/10 text-primary font-medium" href="#">
+<span class="material-symbols-outlined text-[20px]">account_tree</span>
+<span class="text-[14px]">Workflows</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">folder_open</span>
+<span class="text-[14px]">Assets</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">memory</span>
+<span class="text-[14px]">Models</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">history</span>
+<span class="text-[14px]">History</span>
+</a>
+</nav>
+<div class="p-4 mt-auto">
+<div class="bg-[#f8f0ff] p-4 rounded-xl mb-4 border border-[#e1e0ff]">
+<p class="text-[13px] font-bold text-primary mb-1">Trial ends in <span class="font-black">14 days</span></p>
+<p class="text-[11px] text-on-surface-variant mb-3 leading-relaxed">Upgrade to Flow Pro to keep unlimited words and Pro features.</p>
+<button class="w-full bg-black text-white py-2 rounded-lg text-[13px] font-bold">Upgrade to Pro</button>
+</div>
+<div class="space-y-1">
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-low rounded-lg" href="#">
+<span class="material-symbols-outlined text-[20px]">group</span>
+<span class="text-[13px]">Invite your team</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-low rounded-lg" href="#">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+<span class="text-[13px]">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-low rounded-lg" href="#">
+<span class="material-symbols-outlined text-[20px]">help_outline</span>
+<span class="text-[13px]">Help</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-[240px] flex-1 flex flex-col h-full bg-surface-container p-4 md:p-6 lg:p-8">
+<div class="flex-1 flex flex-col bg-white rounded-[32px] overflow-hidden shadow-sm relative">
+<!-- Top Nav Overlayed on Content -->
+<header class="absolute top-0 left-0 right-0 h-20 flex justify-end items-center px-10 z-[60] pointer-events-none">
+<div class="flex items-center gap-6 pointer-events-auto">
+<span class="material-symbols-outlined text-on-surface-variant text-[22px] cursor-pointer hover:text-on-surface transition-colors bg-white/40 p-2 rounded-full backdrop-blur-sm">search</span>
+<div class="flex items-center gap-5">
+<div class="relative flex items-center justify-center cursor-pointer group bg-white/40 p-2 rounded-full backdrop-blur-sm">
+<span class="material-symbols-outlined text-on-surface-variant text-[24px] group-hover:text-on-surface transition-colors">notifications</span>
+<span class="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-error text-[10px] font-bold text-white ring-2 ring-white">1</span>
+</div>
+<div class="h-10 w-10 rounded-full bg-surface-variant flex items-center justify-center overflow-hidden border border-outline-variant cursor-pointer hover:ring-2 hover:ring-primary/20 transition-all">
+<img alt="User Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYsmGCn8Ql35Q9PO9V15HCf1BOy-AhRQ0ajccK2kshl5PlDYKxXw5ULXXCXH4nMACOuW0o6eh4TkNuac2isMM69bu3uxP_QARN6ovIb0PIshP8dyeSkCjsU0WvxZ69lP4SRdUmwFSJWCoqGn5Hkb-2N6hSGfU9YxGYLkqt510oTNUH671sMIlJ12jsvt5mRahPD92YB4YesAfl6Z8Xo5eUu1TDQXwuJg_Zh-JaIJCTw7jSYVyG2v1mlgyh3F5QlXXpkStc1oMyC-o"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Result Comparison Slider Container -->
+<section class="flex-1 relative bg-inverse-surface comparison-slider" id="slider-container">
+<img alt="After" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AP1WRLvANJKcmkQrbqw7VAg7gRp_j_fkd_59IZSQZ_5pRPUjNGuzYPNTOWtnJKMvH9lXxJ-r0WQnUF-GK2ClRw8am4WaBWVZlXlJOmrg_bedOI90JtLHuzTaQBYvZ0JojuxJU0GaK1_9cr4k-zsy4m-dVDEPiOO4lGrtnnFuMyzMZJHs8v-cqj4Jl829o-A6LYVUcjt7XZ4DVxj_4RuqsHnG5bWvL9TRIs1tWdYr_aF4veIjvVdZ70IUjPRPCw"/>
+<div class="comparison-overlay" id="comparison-overlay" style="width: 50%;">
+<img alt="Before" class="absolute top-0 left-0 w-[100vw] h-full object-cover" src="https://lh3.googleusercontent.com/aida/AP1WRLv60xVjI-N_Y6F9iiBR9JpjZYIQUe9fPm9umfBVGMrD8Ec_hVNKrAwyX5nRNm9GnzTkFcwGCc6TbF4lpiM3UkLYoBe-M44ZgDTiaMSjHF-q6FZUQ7jnSJkVoEkdP4HgkoReyhG7U03JsIR2zcCjOYDqd3uIaTfzrVNAVETLVZ9npUT2jPt2ZRqIDhADjA2Cei6s_BPhV5RGEPHDc7lrYDDG3NA4jlGeraKhzp8okJhLnuxWkwRgvJdxXck" style="max-width: none;"/>
+</div>
+<div class="comparison-handle" id="comparison-handle" style="left: 50%;"></div>
+<!-- Labels and Meta Info Overlays -->
+<div class="absolute top-16 left-10 z-20 max-w-lg pointer-events-none">
+<h2 class="font-headline-xl text-[40px] text-white tracking-tight drop-shadow-lg mb-2">AI Image Generator</h2>
+<p class="text-white/80 font-body-md drop-shadow-md max-w-md">Transform concepts into cinematic visuals with our ultra-precise ethereal diffusion model.</p>
+</div>
+<div class="absolute bottom-10 left-10 z-20 flex flex-col gap-2">
+<div class="px-4 py-2 glass-morphism rounded-full font-label-md text-on-surface inline-block text-[13px] font-medium">Sketch Reference</div>
+<div class="px-3 py-1 bg-black/40 backdrop-blur-md rounded-lg text-white font-label-md uppercase tracking-widest text-[10px]">#001-ALPHA</div>
+</div>
+<div class="absolute bottom-10 right-10 z-20 flex flex-col items-end gap-3">
+<div class="px-4 py-2 glass-morphism rounded-full font-label-md text-on-surface inline-block text-[13px] font-medium">Final Generation</div>
+<div class="flex gap-2">
+<button class="w-12 h-12 flex items-center justify-center glass-morphism border border-white/20 rounded-2xl hover:bg-white/40 transition-colors shadow-lg"><span class="material-symbols-outlined">share</span></button>
+<button class="w-12 h-12 flex items-center justify-center glass-morphism border border-white/20 rounded-2xl hover:bg-white/40 transition-colors shadow-lg"><span class="material-symbols-outlined">download</span></button>
+</div>
+</div>
+</section>
+</div>
+<!-- Integrated Control Bar (Background grey) -->
+<div class="w-full mt-8 mb-4">
+<div class="max-w-[1440px] mx-auto grid grid-cols-12 gap-6 items-center">
+<!-- Add Reference -->
+<div class="col-span-2">
+<button class="w-full h-20 bg-white/50 border-2 border-dashed border-primary/20 rounded-[20px] flex flex-col items-center justify-center cursor-pointer hover:border-primary/40 hover:bg-white/80 transition-all text-center">
+<span class="material-symbols-outlined text-primary text-[24px] mb-1">cloud_upload</span>
+<span class="text-[10px] font-bold text-primary/80 uppercase tracking-widest leading-none">Add Reference</span>
+</button>
+</div>
+<!-- Prompt Input and Generate -->
+<div class="col-span-7 flex items-center bg-white rounded-[24px] p-2 pl-6 shadow-sm border border-black/5">
+<div class="flex-1">
+<input class="w-full bg-transparent border-none text-body-lg focus:ring-0 p-0 placeholder:text-on-surface-variant/40" type="text" value="Ethereal flowing 3D glass ribbons with soft lavender..."/>
+</div>
+<div class="flex items-center gap-2 pr-2">
+<button class="p-2.5 rounded-xl hover:bg-surface-container-low transition-colors" title="Settings">
+<span class="material-symbols-outlined text-[22px] text-on-surface-variant">tune</span>
+</button>
+<button class="shimmer-btn bg-black text-white px-8 py-3.5 rounded-xl font-bold flex items-center gap-3 hover:shadow-lg transition-all active:scale-95 text-[14px]">
+                            GENERATE <span class="material-symbols-outlined text-[18px]">auto_awesome</span>
+</button>
+</div>
+</div>
+<!-- Status Metrics -->
+<div class="col-span-3 flex justify-between gap-4">
+<div class="flex-1 flex flex-col items-center justify-center text-center">
+<span class="text-primary font-bold text-[20px] leading-tight">0.8s</span>
+<span class="text-[10px] text-on-surface-variant font-bold uppercase tracking-tight">Processing</span>
+</div>
+<div class="flex-1 flex flex-col items-center justify-center text-center">
+<span class="text-primary font-bold text-[20px] leading-tight">4K</span>
+<span class="text-[10px] text-on-surface-variant font-bold uppercase tracking-tight">Resolution</span>
+</div>
+<div class="flex-1 flex flex-col items-center justify-center text-center">
+<span class="text-primary font-bold text-[20px] leading-tight">120</span>
+<span class="text-[10px] text-on-surface-variant font-bold uppercase tracking-tight">Tokens</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<script>
+    const sliderContainer = document.getElementById('slider-container');
+    const handle = document.getElementById('comparison-handle');
+    const overlay = document.getElementById('comparison-overlay');
+    let isResizing = false;
+
+    const setPosition = (x) => {
+        let containerRect = sliderContainer.getBoundingClientRect();
+        let position = ((x - containerRect.left) / containerRect.width) * 100;
+        if (position < 0) position = 0;
+        if (position > 100) position = 100;
+        handle.style.left = `${position}%`;
+        overlay.style.width = `${position}%`;
+    };
+
+    const onMouseMove = (e) => {
+        if (!isResizing) return;
+        setPosition(e.clientX || (e.touches && e.touches[0].clientX));
+    };
+
+    const onMouseDown = () => isResizing = true;
+    const onMouseUp = () => isResizing = false;
+
+    sliderContainer.addEventListener('mousedown', onMouseDown);
+    window.addEventListener('mouseup', onMouseUp);
+    window.addEventListener('mousemove', onMouseMove);
+    sliderContainer.addEventListener('touchstart', onMouseDown);
+    window.addEventListener('touchend', onMouseUp);
+    window.addEventListener('touchmove', onMouseMove);
+
+    // Initial state
+    overlay.style.width = '50%';
+    handle.style.left = '50%';
+</script>
+</body></html>

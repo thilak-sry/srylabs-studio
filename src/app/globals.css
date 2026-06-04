@@ -1,0 +1,81 @@
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap');
+@import "tailwindcss";
+
+:root {
+  --background: #f0edec;
+  --foreground: #1c1b1b;
+}
+
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: Geist, var(--font-geist-sans), sans-serif;
+  --font-mono: var(--font-geist-mono);
+
+  --color-on-primary: #ffffff;
+  --color-on-tertiary: #ffffff;
+  --color-secondary-fixed-dim: #ddb7ff;
+  --color-error-container: #ffdad6;
+  --color-surface-bright: #fcf9f8;
+  --color-outline-variant: #c7c4d7;
+  --color-error: #ba1a1a;
+  --color-primary: #4648d4;
+  --color-on-secondary-container: #fffbff;
+  --color-on-primary-fixed: #07006c;
+  --color-tertiary: #904900;
+  --color-secondary: #8127cf;
+  --color-on-tertiary-container: #fffbff;
+  --color-tertiary-container: #b55d00;
+  --color-on-secondary-fixed-variant: #6900b3;
+  --color-outline: #767586;
+  --color-primary-fixed: #e1e0ff;
+  --color-on-error: #ffffff;
+  --color-on-surface: #1c1b1b;
+  --color-on-error-container: #93000a;
+  --color-surface-variant: #e5e2e1;
+  --color-surface-tint: #494bd6;
+  --color-on-secondary: #ffffff;
+  --color-surface-dim: #dcd9d9;
+  --color-surface-container-low: #f6f3f2;
+  --color-surface: #fcf9f8;
+  --color-tertiary-fixed: #ffdcc5;
+  --color-surface-container-lowest: #ffffff;
+  --color-secondary-fixed: #f0dbff;
+  --color-on-tertiary-fixed: #301400;
+  --color-surface-container-high: #ebe7e7;
+  --color-primary-fixed-dim: #c0c1ff;
+  --color-on-primary-container: #fffbff;
+  --color-on-background: #1c1b1b;
+  --color-surface-container: #f0edec;
+  --color-tertiary-fixed-dim: #ffb783;
+  --color-secondary-container: #9c48ea;
+  --color-inverse-surface: #313030;
+  --color-on-tertiary-fixed-variant: #703700;
+  --color-on-secondary-fixed: #2c0051;
+  --color-surface-container-highest: #e5e2e1;
+  --color-on-primary-fixed-variant: #2f2ebe;
+  --color-inverse-on-surface: #f3f0ef;
+  --color-primary-container: #6063ee;
+  --color-on-surface-variant: #464554;
+  --color-inverse-primary: #c0c1ff;
+
+  --radius-card: 20px;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Geist, var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+/* Custom classes matching screen.html styles */
+.hero-banner {
+  background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('/hero-bg.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+.sidebar-active {
+  background-color: #efe8dc;
+}
