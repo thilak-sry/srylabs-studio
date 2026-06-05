@@ -44,37 +44,63 @@ function renameBundle(dir, ext, targetName) {
   }
 }
 
-console.log('Running post-build script to rename installers...');
-renameBundle(nsisDir, '.exe', 'SRY Studio');
-renameBundle(msiDir, '.msi', 'SRY Studio');
+console.log(`Running post-build script for platform: ${process.platform}...`);
 
-// Now that the main installer is in the bootstrapper's assets, build the bootstrapper
-console.log('\n--- Building the Bootstrapper ---');
-const { execSync } = require('child_process');
-const bootstrapperDir = path.join(__dirname, '..', 'bootstrapper');
+if (process.platform === 'win32') {
+  renameBundle(nsisDir, '.exe', 'SRY Studio');
+  renameBundle(msiDir, '.msi', 'SRY Studio');
 
-try {
-  // Build the bootstrapper using Tauri CLI
-  execSync('npx tauri build', { cwd: bootstrapperDir, stdio: 'inherit' });
-  
-  // The bootstrapper executable is generated here:
-  const rawBootstrapperExe = path.join(bootstrapperDir, 'src-tauri', 'target', 'release', 'bootstrapper.exe');
-  
-  if (fs.existsSync(rawBootstrapperExe)) {
-    // Create the installer directory if it doesn't exist
-    const installerDir = path.join(outputDir, 'installer');
-    if (!fs.existsSync(installerDir)) {
-      fs.mkdirSync(installerDir, { recursive: true });
+  // Now that the main installer is in the bootstrapper's assets, build the bootstrapper
+  console.log('\n--- Building the Bootstrapper ---');
+  const { execSync } = require('child_process');
+  const bootstrapperDir = path.join(__dirname, '..', 'bootstrapper');
+
+  try {
+    // Build the bootstrapper using Tauri CLI
+    execSync('npx tauri build', { cwd: bootstrapperDir, stdio: 'inherit' });
+    
+    // The bootstrapper executable is generated here:
+    const rawBootstrapperExe = path.join(bootstrapperDir, 'src-tauri', 'target', 'release', 'bootstrapper.exe');
+    
+    if (fs.existsSync(rawBootstrapperExe)) {
+      // Create the installer directory if it doesn't exist
+      const installerDir = path.join(outputDir, 'installer');
+      if (!fs.existsSync(installerDir)) {
+        fs.mkdirSync(installerDir, { recursive: true });
+      }
+
+      // Copy the final bootstrapper exe to the installer directory, renamed!
+      const finalSetupPath = path.join(installerDir, 'SRY Studio.exe');
+      fs.copyFileSync(rawBootstrapperExe, finalSetupPath);
+      console.log(`\n✅ Successfully generated the final custom Bootstrapper!`);
+      console.log(`✅ Final File: ${finalSetupPath}`);
+    } else {
+      console.error('Bootstrapper executable was not found after build!');
     }
-
-    // Copy the final bootstrapper exe to the installer directory, renamed!
-    const finalSetupPath = path.join(installerDir, 'SRY Studio.exe');
-    fs.copyFileSync(rawBootstrapperExe, finalSetupPath);
-    console.log(`\n✅ Successfully generated the final custom Bootstrapper!`);
-    console.log(`✅ Final File: ${finalSetupPath}`);
-  } else {
-    console.error('Bootstrapper executable was not found after build!');
+  } catch (err) {
+    console.error('\n❌ Failed to build the bootstrapper:', err.message);
   }
-} catch (err) {
-  console.error('\n❌ Failed to build the bootstrapper:', err.message);
+} else if (process.platform === 'darwin') {
+  const dmgDir = path.join(__dirname, '..', 'src-tauri', 'target', 'release', 'bundle', 'dmg');
+  renameBundle(dmgDir, '.dmg', 'SRY Studio');
+
+  const macosDir = path.join(__dirname, '..', 'src-tauri', 'target', 'release', 'bundle', 'macos');
+  if (fs.existsSync(macosDir)) {
+    const files = fs.readdirSync(macosDir);
+    for (const file of files) {
+      if (file.endsWith('.app') && file !== 'SRY Studio.app') {
+        const oldPath = path.join(macosDir, file);
+        const newPath = path.join(macosDir, 'SRY Studio.app');
+        try {
+          fs.renameSync(oldPath, newPath);
+          console.log(`Successfully renamed: ${oldPath} -> ${newPath}`);
+        } catch (err) {
+          console.error(`Error renaming macOS app bundle:`, err);
+        }
+      }
+    }
+  }
+} else {
+  console.log(`No custom post-build actions defined for platform: ${process.platform}`);
 }
+

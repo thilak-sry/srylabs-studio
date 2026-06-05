@@ -1,6 +1,7 @@
 use tauri::{AppHandle, Manager};
 use std::process::Command;
 
+#[cfg(target_os = "windows")]
 #[tauri::command]
 async fn install_app(app: AppHandle) -> Result<(), String> {
     // Embed the installer directly into the binary at compile time
@@ -28,6 +29,13 @@ async fn install_app(app: AppHandle) -> Result<(), String> {
     }
 }
 
+#[cfg(not(target_os = "windows"))]
+#[tauri::command]
+async fn install_app(_app: AppHandle) -> Result<(), String> {
+    Err("Installation is only supported on Windows".to_string())
+}
+
+#[cfg(target_os = "windows")]
 #[tauri::command]
 fn launch_app() -> Result<(), String> {
     let local_app_data = std::env::var("LOCALAPPDATA")
@@ -47,6 +55,13 @@ fn launch_app() -> Result<(), String> {
 
     std::process::exit(0);
 }
+
+#[cfg(not(target_os = "windows"))]
+#[tauri::command]
+fn launch_app() -> Result<(), String> {
+    Err("Launching is only supported on Windows".to_string())
+}
+
 
 #[tauri::command]
 fn close_app() {
