@@ -254,7 +254,7 @@ export default function HomePage() {
         )}
 
         {/* LEFT SIDEBAR (blends with container) */}
-        <aside className={`fixed md:relative z-50 h-full flex flex-col bg-[#f5f4f0] shrink-0 pt-4 transition-transform duration-300 shadow-2xl md:shadow-none ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'} ${isSidebarCollapsed ? 'w-[200px] md:w-[72px]' : 'w-[200px]'}`}>
+        <aside className={`fixed md:relative z-50 h-full flex flex-col bg-[#f5f4f0] shrink-0 pt-4 transition-all duration-300 ease-in-out shadow-2xl md:shadow-none overflow-x-hidden ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'} ${isSidebarCollapsed ? 'w-[200px] md:w-[72px]' : 'w-[200px]'}`}>
           {/* Toggle Sidebar Button */}
           <div className={`px-4 mb-2 hidden md:flex ${isSidebarCollapsed ? 'justify-start md:justify-center' : 'justify-start pl-4'}`}>
             <button
@@ -268,77 +268,64 @@ export default function HomePage() {
           </div>
 
           {/* Brand / Logo */}
-          <div className={`pr-4 mb-4 ${isSidebarCollapsed ? 'pl-0 flex justify-center py-2' : 'pl-4 py-4'}`}>
-            <div className="flex items-center gap-1.5">
+          <div className={`mb-4 transition-all duration-300 ease-in-out ${isSidebarCollapsed ? 'flex justify-center py-2' : 'pl-4 pr-4 py-4'}`}>
+            <div className="flex items-center min-w-0">
               <img
                 src="/SRY Labs.png"
                 alt="SRY Studio"
-                className="object-contain"
+                className="object-contain shrink-0"
                 style={{ width: '24px', height: '24px' }}
               />
-              {!isSidebarCollapsed && (
-                <h1 className="font-headline-md text-[17px] font-bold tracking-tight">SRY Studio</h1>
-              )}
+              <h1 className={`font-headline-md text-[17px] font-bold tracking-tight transition-all duration-300 ease-in-out overflow-hidden whitespace-nowrap ${isSidebarCollapsed ? 'opacity-0 max-w-0 ml-0 pointer-events-none' : 'opacity-100 max-w-[120px] ml-2'}`}>
+                SRY Studio
+              </h1>
             </div>
           </div>
 
           {/* Navigation Items */}
-          <nav className={`flex-1 space-y-1 ${isSidebarCollapsed ? 'px-2' : 'pl-3'}`}>
-            <button
-              onClick={() => {
-                setActiveTab('home');
-                setIsMobileMenuOpen(false);
-              }}
-              className={`flex items-center gap-2 py-2 rounded-lg transition-all text-left font-semibold ${
-                isSidebarCollapsed ? 'justify-center w-10 h-10 p-0 mx-auto' : 'w-[calc(100%+16px)] pl-2 pr-4'
-              } ${activeTab === 'home'
-                ? 'sidebar-active text-on-surface'
-                : 'text-on-surface-variant hover:bg-zinc-200/50 hover:text-on-surface'
-                }`}
-            >
-              <span className="material-symbols-outlined text-[16px]">grid_view</span>
-              {!isSidebarCollapsed && <span className="text-[12px]">Home</span>}
-            </button>
-
-            <div
-              className={`flex items-center gap-2 py-2 rounded-lg text-on-surface-variant cursor-pointer hover:bg-zinc-200/50 hover:text-on-surface transition-all font-semibold ${
-                isSidebarCollapsed ? 'justify-center w-10 h-10 p-0 mx-auto' : 'w-[calc(100%+16px)] pl-2 pr-4 text-left'
-              }`}
-            >
-              <span className="material-symbols-outlined text-[16px]">account_tree</span>
-              {!isSidebarCollapsed && <span className="text-[12px]">Workflows</span>}
-            </div>
-
-            <div
-              className={`flex items-center gap-2 py-2 rounded-lg text-on-surface-variant cursor-pointer hover:bg-zinc-200/50 hover:text-on-surface transition-all font-semibold ${
-                isSidebarCollapsed ? 'justify-center w-10 h-10 p-0 mx-auto' : 'w-[calc(100%+16px)] pl-2 pr-4 text-left'
-              }`}
-            >
-              <span className="material-symbols-outlined text-[16px]">folder_open</span>
-              {!isSidebarCollapsed && <span className="text-[12px]">Assets</span>}
-            </div>
-
-            <div
-              className={`flex items-center gap-2 py-2 rounded-lg text-on-surface-variant cursor-pointer hover:bg-zinc-200/50 hover:text-on-surface transition-all font-semibold ${
-                isSidebarCollapsed ? 'justify-center w-10 h-10 p-0 mx-auto' : 'w-[calc(100%+16px)] pl-2 pr-4 text-left'
-              }`}
-            >
-              <span className="material-symbols-outlined text-[16px]">memory</span>
-              {!isSidebarCollapsed && <span className="text-[12px]">Models</span>}
-            </div>
-
-            <div
-              className={`flex items-center gap-2 py-2 rounded-lg text-on-surface-variant cursor-pointer hover:bg-zinc-200/50 hover:text-on-surface transition-all font-semibold ${
-                isSidebarCollapsed ? 'justify-center w-10 h-10 p-0 mx-auto' : 'w-[calc(100%+16px)] pl-2 pr-4 text-left'
-              }`}
-            >
-              <span className="material-symbols-outlined text-[16px]">history</span>
-              {!isSidebarCollapsed && <span className="text-[12px]">History</span>}
-            </div>
+          <nav className={`flex-1 space-y-1 transition-all duration-300 ease-in-out ${isSidebarCollapsed ? 'px-2' : 'pl-3'}`}>
+            {[
+              { label: 'Home', icon: 'grid_view', tab: 'home' as const },
+              { label: 'Workflows', icon: 'account_tree', tab: null },
+              { label: 'Assets', icon: 'folder_open', tab: null },
+              { label: 'Models', icon: 'memory', tab: null },
+              { label: 'History', icon: 'history', tab: null },
+            ].map((item) => {
+              const isSelected = item.tab && activeTab === item.tab;
+              return (
+                <button
+                  key={item.label}
+                  onClick={() => {
+                    if (item.tab) {
+                      setActiveTab(item.tab);
+                      setIsMobileMenuOpen(false);
+                    }
+                  }}
+                  className={`flex items-center py-2 rounded-lg transition-all duration-300 ease-in-out text-left font-semibold cursor-pointer ${
+                    isSidebarCollapsed 
+                      ? 'justify-center w-10 h-10 p-0 mx-auto' 
+                      : 'w-[calc(100%+16px)] pl-2 pr-4'
+                  } ${
+                    isSelected
+                      ? 'sidebar-active text-on-surface'
+                      : 'text-on-surface-variant hover:bg-zinc-200/50 hover:text-on-surface'
+                  }`}
+                >
+                  <span className="material-symbols-outlined text-[16px] shrink-0">{item.icon}</span>
+                  <span className={`text-[12px] transition-all duration-300 ease-in-out overflow-hidden whitespace-nowrap ${
+                    isSidebarCollapsed 
+                      ? 'opacity-0 max-w-0 ml-0 pointer-events-none' 
+                      : 'opacity-100 max-w-[120px] ml-2'
+                  }`}>
+                    {item.label}
+                  </span>
+                </button>
+              );
+            })}
           </nav>
 
           {/* Bottom Area */}
-          <div className={`py-4 mt-auto ${isSidebarCollapsed ? 'px-2' : 'pl-4 pr-1'}`}>
+          <div className={`py-4 mt-auto transition-all duration-300 ease-in-out ${isSidebarCollapsed ? 'px-2' : 'pl-4 pr-1'}`}>
             {/* Bottom Settings Navigation */}
             <div className="space-y-1">
               {[
@@ -348,13 +335,21 @@ export default function HomePage() {
               ].map((item) => (
                 <div
                   key={item.label}
-                  className={`flex items-center gap-3 py-2 text-on-surface-variant rounded-lg font-semibold cursor-pointer hover:bg-zinc-200/50 hover:text-on-surface transition-all ${
-                    isSidebarCollapsed ? 'justify-center w-10 h-10 p-0 mx-auto' : 'w-[calc(100%+16px)] pl-2 pr-4 text-[13px] text-left whitespace-nowrap'
+                  className={`flex items-center py-2 text-on-surface-variant rounded-lg font-semibold cursor-pointer hover:bg-zinc-200/50 hover:text-on-surface transition-all duration-300 ease-in-out ${
+                    isSidebarCollapsed 
+                      ? 'justify-center w-10 h-10 p-0 mx-auto' 
+                      : 'w-[calc(100%+16px)] pl-2 pr-4 text-[13px] text-left whitespace-nowrap'
                   }`}
                   title={isSidebarCollapsed ? item.label : undefined}
                 >
-                  <span className="material-symbols-outlined text-[20px]">{item.icon}</span>
-                  {!isSidebarCollapsed && <span>{item.label}</span>}
+                  <span className="material-symbols-outlined text-[20px] shrink-0">{item.icon}</span>
+                  <span className={`transition-all duration-300 ease-in-out overflow-hidden whitespace-nowrap ${
+                    isSidebarCollapsed 
+                      ? 'opacity-0 max-w-0 ml-0 pointer-events-none' 
+                      : 'opacity-100 max-w-[120px] ml-3 text-[13px]'
+                  }`}>
+                    {item.label}
+                  </span>
                 </div>
               ))}
             </div>
