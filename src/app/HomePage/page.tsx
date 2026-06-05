@@ -16,13 +16,14 @@ interface Workflow {
 export default function HomePage() {
   const router = useRouter();
   // Navigation State
-  const [activeTab, setActiveTab] = useState<'home' | 'insights' | 'dictionary' | 'snippets'>('home');
+  const [activeTab, setActiveTab] = useState<'home' | 'insights' | 'dictionary' | 'snippets' | 'style' | 'scratchpad'>('home');
   const [activeBottomTab, setActiveBottomTab] = useState<string | null>(null);
 
   // Interaction State
   const [searchQuery, setSearchQuery] = useState('');
   const [searchVisible, setSearchVisible] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [proModalOpen, setProModalOpen] = useState(false);
@@ -213,11 +214,25 @@ export default function HomePage() {
 
   return (
     <div className="bg-[#f5f4f0] text-on-background font-body-md antialiased h-screen w-full flex justify-center overflow-hidden select-none">
-      <div className="w-full h-full flex relative">
+      {/* RESPONSIVE LAYOUT */}
+      <div className="flex w-full h-full relative">
 
         {/* ABSOLUTE HEADER */}
-        <header className="absolute top-0 right-0 left-0 h-12 flex justify-end items-center pl-10 pr-5 pointer-events-none z-30">
-          <div className="flex items-center gap-5 pointer-events-auto">
+        <header className="absolute top-0 right-0 left-0 h-14 md:h-12 flex justify-between md:justify-end items-center px-4 md:pl-10 md:pr-5 pointer-events-none z-30">
+          <div className="flex items-center gap-2 pointer-events-auto md:hidden pt-4">
+            <button onClick={() => setIsMobileMenuOpen(true)} className="p-2 bg-white/80 rounded-xl shadow-sm text-zinc-700 hover:text-black">
+              <span className="material-symbols-outlined">menu</span>
+            </button>
+            <div className="flex items-center gap-1.5 ml-2">
+              <img
+                src="/SRY Labs.png"
+                alt="SRY Studio"
+                className="object-contain w-5 h-5"
+              />
+              <span className="font-bold text-sm tracking-tight text-zinc-900">SRY Studio</span>
+            </div>
+          </div>
+          <div className="flex items-center gap-4 md:gap-5 pointer-events-auto pt-4 md:pt-0">
             {/* Static Notifications */}
             <div className="relative text-on-surface-variant">
               <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>notifications</span>
@@ -230,10 +245,18 @@ export default function HomePage() {
           </div>
         </header>
 
+        {/* MOBILE OVERLAY */}
+        {isMobileMenuOpen && (
+          <div 
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 md:hidden transition-opacity"
+            onClick={() => setIsMobileMenuOpen(false)}
+          ></div>
+        )}
+
         {/* LEFT SIDEBAR (blends with container) */}
-        <aside className={`h-full flex flex-col bg-[#f5f4f0] shrink-0 pt-4 transition-all duration-300 ${isSidebarCollapsed ? 'w-[72px]' : 'w-[200px]'}`}>
+        <aside className={`fixed md:relative z-50 h-full flex flex-col bg-[#f5f4f0] shrink-0 pt-4 transition-transform duration-300 shadow-2xl md:shadow-none ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'} ${isSidebarCollapsed ? 'w-[200px] md:w-[72px]' : 'w-[200px]'}`}>
           {/* Toggle Sidebar Button */}
-          <div className={`px-4 mb-2 flex ${isSidebarCollapsed ? 'justify-center' : 'justify-start pl-4'}`}>
+          <div className={`px-4 mb-2 hidden md:flex ${isSidebarCollapsed ? 'justify-start md:justify-center' : 'justify-start pl-4'}`}>
             <button
               onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
               className="p-1.5 hover:bg-zinc-200/50 rounded-lg text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer"
@@ -262,7 +285,10 @@ export default function HomePage() {
           {/* Navigation Items */}
           <nav className={`flex-1 space-y-1 ${isSidebarCollapsed ? 'px-2' : 'pl-3'}`}>
             <button
-              onClick={() => setActiveTab('home')}
+              onClick={() => {
+                setActiveTab('home');
+                setIsMobileMenuOpen(false);
+              }}
               className={`flex items-center gap-2 py-2 rounded-lg transition-all text-left font-semibold ${
                 isSidebarCollapsed ? 'justify-center w-10 h-10 p-0 mx-auto' : 'w-[calc(100%+16px)] pl-2 pr-4'
               } ${activeTab === 'home'
@@ -336,12 +362,12 @@ export default function HomePage() {
         </aside>
 
         {/* MAIN CONTAINER CARD */}
-        <div className={`flex-1 h-full flex flex-col pt-12 pb-2 pr-2 min-w-0 transition-all duration-300 ${isSidebarCollapsed ? 'pl-0' : 'pl-6'}`}>
-          <main className="flex-1 overflow-hidden bg-white rounded-[24px] border border-outline-variant/30 flex flex-col pt-12 shadow-sm">
+        <div className={`flex-1 h-full flex flex-col pt-20 md:pt-12 pb-2 px-2 md:pr-2 min-w-0 transition-all duration-300 ${isSidebarCollapsed ? 'md:pl-0' : 'md:pl-6'}`}>
+          <main className="flex-1 overflow-hidden bg-white rounded-[24px] border border-outline-variant/30 flex flex-col pt-6 md:pt-12 shadow-sm">
 
             {/* SCREEN VIEWS CONDITIONAL RENDER */}
             {activeTab === 'home' && (
-              <div className="px-10 pb-12 flex-1 overflow-hidden flex flex-col min-h-0">
+              <div className="px-4 md:px-10 pb-6 md:pb-12 flex-1 overflow-y-auto md:overflow-hidden flex flex-col min-h-0">
                 <div className="max-w-[1200px] mx-auto w-full flex-1 flex flex-col min-h-0">
 
                   {/* GREETING */}
@@ -353,13 +379,13 @@ export default function HomePage() {
                 </h2>
 
                 {/* TWO COLUMN CONTENT AREA */}
-                <div className="flex flex-col lg:flex-row gap-8 items-start flex-1 min-h-0 overflow-hidden w-full">
+                <div className="flex flex-col lg:flex-row gap-8 items-start flex-1 min-h-0 w-full overflow-y-auto lg:overflow-hidden">
 
                   {/* LEFT COLUMN */}
-                  <div className="flex-1 space-y-12 min-w-0 w-full h-full overflow-y-auto no-scrollbar pr-2 pb-6">
+                  <div className="flex-1 space-y-8 md:space-y-12 min-w-0 w-full lg:h-full lg:overflow-y-auto no-scrollbar md:pr-2 pb-6">
 
                     {/* HERO BANNER WITH REFRESHED ARTWORK BACKGROUND */}
-                    <section className="h-[165px] rounded-[24px] relative overflow-hidden flex flex-col justify-center px-12 text-white shadow-md">
+                    <section className="h-[140px] md:h-[165px] rounded-[24px] relative overflow-hidden flex flex-col justify-center px-6 md:px-12 text-white shadow-md">
                       <img
                         alt="AI Artwork Collection"
                         className="absolute inset-0 w-full h-full object-cover"
@@ -368,8 +394,8 @@ export default function HomePage() {
                       <div className="absolute inset-0 bg-black/30"></div>
 
                       <div className="relative z-10">
-                        <h3 className="text-[32px] font-serif font-light mb-2">Create Stunning Images with AI</h3>
-                        <p className="text-white/90 text-[16px] mb-6">Flow works anywhere you type.</p>
+                        <h3 className="text-[24px] md:text-[32px] font-serif font-light mb-1 md:mb-2 leading-tight">Create Stunning Images with AI</h3>
+                        <p className="text-white/90 text-[14px] md:text-[16px] mb-2 md:mb-6">Flow works anywhere you type.</p>
                       </div>
                     </section>
 
@@ -386,7 +412,7 @@ export default function HomePage() {
                         )}
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                         {filteredWorkflows.length === 0 ? (
                           <div className="p-12 text-center text-on-surface-variant col-span-2 border border-dashed border-zinc-200 rounded-2xl">
                             <span className="material-symbols-outlined text-4xl mb-2 text-zinc-300">search_off</span>
@@ -496,7 +522,7 @@ export default function HomePage() {
                   </div>
 
                   {/* RIGHT COLUMN */}
-                  <div className="w-full lg:w-[260px] xl:w-[280px] space-y-6 shrink-0 text-left">
+                  <div className="w-full lg:w-[260px] xl:w-[280px] space-y-6 shrink-0 text-left pb-10 lg:pb-0">
 
                     {/* WORKFLOW STATS WIDGET */}
                     <div className="bg-[#f5f4f0] rounded-[24px] p-6 border border-outline-variant/20 shadow-sm">
@@ -553,7 +579,7 @@ export default function HomePage() {
 
             {/* INSIGHTS VIEW */}
             {activeTab === 'insights' && (
-              <div className="p-10 flex-1 overflow-y-auto text-left">
+              <div className="p-4 md:p-10 flex-1 overflow-y-auto text-left">
                 <div className="max-w-[1200px] mx-auto w-full">
                   <h2 className="text-2xl font-bold mb-4">Performance Insights</h2>
                 <p className="text-on-surface-variant mb-6 text-sm">
@@ -602,7 +628,7 @@ export default function HomePage() {
 
             {/* DICTIONARY VIEW */}
             {activeTab === 'dictionary' && (
-              <div className="p-10 flex-1 overflow-y-auto text-left">
+              <div className="p-4 md:p-10 flex-1 overflow-y-auto text-left">
                 <div className="max-w-[1200px] mx-auto w-full">
                   <h2 className="text-2xl font-bold mb-4">Flow Dictionary</h2>
                 <p className="text-on-surface-variant mb-6 text-sm">
@@ -641,7 +667,7 @@ export default function HomePage() {
 
             {/* SNIPPETS VIEW */}
             {activeTab === 'snippets' && (
-              <div className="p-10 flex-1 overflow-y-auto text-left">
+              <div className="p-4 md:p-10 flex-1 overflow-y-auto text-left">
                 <div className="max-w-[1200px] mx-auto w-full">
                   <h2 className="text-2xl font-bold mb-4">Snippet Presets</h2>
                 <p className="text-on-surface-variant mb-6 text-sm">
@@ -678,8 +704,9 @@ export default function HomePage() {
           )}
           </main>
         </div>
+      </div>
 
-        {/* PRO UPGRADE MODAL */}
+      {/* PRO UPGRADE MODAL */}
         {proModalOpen && (
           <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
             <div className="bg-white rounded-3xl max-w-md w-full p-8 text-center relative border border-zinc-100 shadow-2xl z-50">
@@ -787,8 +814,6 @@ export default function HomePage() {
           <span className="material-symbols-outlined text-emerald-400 text-[20px]">check_circle</span>
           <span className="text-xs font-medium">{toast.message}</span>
         </div>
-
       </div>
-    </div>
   );
 }

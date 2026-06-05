@@ -26,6 +26,10 @@ const ImageCompare: React.FC<ImageCompareProps> = ({
     const afterLabelRef = useRef<HTMLDivElement>(null);
     const isDragging = useRef(false);
 
+    // Refs for image elements to check cache status
+    const afterImgRef = useRef<HTMLImageElement>(null);
+    const beforeImgRef = useRef<HTMLImageElement>(null);
+
     // Initialize position at 50%
     const positionRef = useRef(50);
 
@@ -37,6 +41,21 @@ const ImageCompare: React.FC<ImageCompareProps> = ({
             setIsLoaded(true);
         }
     };
+
+    // Effect to check if images are already cached/loaded
+    useEffect(() => {
+        let count = 0;
+        if (afterImgRef.current && afterImgRef.current.complete) {
+            count += 1;
+        }
+        if (beforeImgRef.current && beforeImgRef.current.complete) {
+            count += 1;
+        }
+        imagesLoaded.current = count;
+        if (count >= 2) {
+            setIsLoaded(true);
+        }
+    }, [beforeImage, afterImage]);
 
     // Performance: Update the DOM directly using CSS variables or styles
     const updateDOM = (pos: number) => {
@@ -144,6 +163,7 @@ const ImageCompare: React.FC<ImageCompareProps> = ({
 
             {/* AFTER Image (Background) */}
             <img
+                ref={afterImgRef}
                 src={afterImage}
                 alt={`After ${alt}`}
                 className={`absolute inset-0 w-full h-full object-cover pointer-events-none select-none transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
@@ -162,6 +182,7 @@ const ImageCompare: React.FC<ImageCompareProps> = ({
                 }}
             >
                 <img
+                    ref={beforeImgRef}
                     src={beforeImage}
                     alt={`Before ${alt}`}
                     className="absolute inset-0 w-full h-full object-cover"
