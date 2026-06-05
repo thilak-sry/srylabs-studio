@@ -3,7 +3,7 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f0edec;
+  --background: #f5f4f0;
   --foreground: #1c1b1b;
 }
 
@@ -47,7 +47,7 @@
   --color-primary-fixed-dim: #c0c1ff;
   --color-on-primary-container: #fffbff;
   --color-on-background: #1c1b1b;
-  --color-surface-container: #f0edec;
+  --color-surface-container: #f5f4f0;
   --color-tertiary-fixed-dim: #ffb783;
   --color-secondary-container: #9c48ea;
   --color-inverse-surface: #313030;
@@ -78,4 +78,15 @@ body {
 
 .sidebar-active {
   background-color: #efe8dc;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }

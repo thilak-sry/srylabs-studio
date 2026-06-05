@@ -13,8 +13,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SRY Labs - AI Workflows",
+  title: "SRY Studio",
   description: "Immersive AI Image Workflow Platform by SRY Labs",
+  icons: {
+    icon: "/SRY Labs.png",
+  },
 };
 
 export default function RootLayout({

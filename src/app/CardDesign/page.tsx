@@ -15,6 +15,7 @@ export default function CardDesignPage() {
   const [isPro, setIsPro] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchVisible, setSearchVisible] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   // Settings configs
   const [guidanceScale, setGuidanceScale] = useState(7.5);
@@ -43,7 +44,7 @@ export default function CardDesignPage() {
     if (isGenerating) return;
     setIsGenerating(true);
     showToast('Starting AI image generation...');
-    
+
     // Simulate generation loading with a simple delay
     setTimeout(() => {
       setIsGenerating(false);
@@ -54,234 +55,125 @@ export default function CardDesignPage() {
   const activeNotificationsCount = notifications.filter((n) => !n.read).length;
 
   return (
-    <div className="bg-[#f0edec] text-on-surface font-body-md h-screen w-full overflow-hidden select-none relative flex justify-center">
-      <div className="flex h-full w-full max-w-[1840px] relative">
-        
+    <div className="bg-[#f5f4f0] text-on-surface font-body-md h-screen w-full overflow-hidden select-none relative flex justify-center">
+      <div className="flex h-full w-full relative">
+
         {/* SIDEBAR */}
-        <aside className="w-[240px] h-full flex flex-col bg-[#f0edec] shrink-0">
-          <div className="p-6 mb-4">
-            <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-2xl text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>
-                auto_awesome
+        <aside className={`h-full flex flex-col bg-[#f5f4f0] shrink-0 pt-4 transition-all duration-300 ${isSidebarCollapsed ? 'w-[72px]' : 'w-[200px]'}`}>
+          {/* Toggle Sidebar Button */}
+          <div className={`px-4 mb-2 flex ${isSidebarCollapsed ? 'justify-center' : 'justify-start pl-4'}`}>
+            <button
+              onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+              className="p-1.5 hover:bg-zinc-200/50 rounded-lg text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer"
+            >
+              <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>
+                dock_to_left
               </span>
-              <h1 className="font-headline-md text-xl font-bold">SRY Labs</h1>
-              <span className="bg-[#f0dbff] text-[#6900b3] text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ml-1">
-                {isPro ? 'Pro' : 'Trial'}
-              </span>
+            </button>
+          </div>
+
+          {/* Brand / Logo */}
+          <div className={`pr-4 mb-4 ${isSidebarCollapsed ? 'pl-0 flex justify-center py-2' : 'pl-4 py-4'}`}>
+            <div className="flex items-center gap-1.5">
+              <img
+                src="/SRY Labs.png"
+                alt="SRY Studio"
+                className="object-contain"
+                style={{ width: '24px', height: '24px' }}
+              />
+              {!isSidebarCollapsed && (
+                <h1 className="font-headline-md text-[17px] font-bold tracking-tight">SRY Studio</h1>
+              )}
             </div>
           </div>
 
-          <nav className="flex-1 px-3 space-y-1">
+          {/* Navigation Items */}
+          <nav className={`flex-1 space-y-1 ${isSidebarCollapsed ? 'px-2' : 'pl-3'}`}>
             <Link
               href="/"
-              className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-on-surface-variant hover:bg-zinc-200/50 hover:text-on-surface transition-all text-left"
+              className={`flex items-center gap-2 py-2 rounded-lg text-on-surface-variant hover:bg-zinc-200/50 hover:text-on-surface transition-all font-semibold ${
+                isSidebarCollapsed ? 'justify-center w-10 h-10 p-0 mx-auto' : 'w-[calc(100%+16px)] pl-2 pr-4 text-left'
+              }`}
             >
-              <span className="material-symbols-outlined text-[20px]">grid_view</span>
-              <span className="text-[14px]">Home</span>
+              <span className="material-symbols-outlined text-[16px]">grid_view</span>
+              {!isSidebarCollapsed && <span className="text-[12px]">Home</span>}
             </Link>
 
-            <a
-              className="flex items-center gap-3 px-4 py-2.5 rounded-lg sidebar-active text-on-surface font-semibold"
-              href="#"
+            <div
+              className={`flex items-center gap-2 py-2 rounded-lg text-on-surface-variant cursor-pointer hover:bg-zinc-200/50 hover:text-on-surface transition-all font-semibold ${
+                isSidebarCollapsed ? 'justify-center w-10 h-10 p-0 mx-auto' : 'w-[calc(100%+16px)] pl-2 pr-4 text-left'
+              }`}
             >
-              <span className="material-symbols-outlined text-[20px]">account_tree</span>
-              <span className="text-[14px]">Workflows</span>
-            </a>
-
-            <a
-              onClick={() => showToast('Assets folder accessed')}
-              className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-on-surface-variant hover:bg-zinc-200/50 hover:text-on-surface transition-colors cursor-pointer"
-              href="#"
-            >
-              <span className="material-symbols-outlined text-[20px]">folder_open</span>
-              <span className="text-[14px]">Assets</span>
-            </a>
-
-            <a
-              onClick={() => showToast('Models manager loaded')}
-              className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-on-surface-variant hover:bg-zinc-200/50 hover:text-on-surface transition-colors cursor-pointer"
-              href="#"
-            >
-              <span className="material-symbols-outlined text-[20px]">memory</span>
-              <span className="text-[14px]">Models</span>
-            </a>
-
-            <a
-              onClick={() => showToast('Generation history loaded')}
-              className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-on-surface-variant hover:bg-zinc-200/50 hover:text-on-surface transition-colors cursor-pointer"
-              href="#"
-            >
-              <span className="material-symbols-outlined text-[20px]">history</span>
-              <span className="text-[14px]">History</span>
-            </a>
-          </nav>
-
-          <div className="p-4 mt-auto">
-            <div className="bg-[#f8f0ff] p-4 rounded-xl mb-4 border border-[#e1e0ff]">
-              <p className="text-[13px] font-bold text-primary mb-1">
-                Trial ends in <span className="font-black">14 days</span>
-              </p>
-              <p className="text-[11px] text-on-surface-variant mb-3 leading-relaxed">
-                Upgrade to Flow Pro to keep unlimited words and Pro features.
-              </p>
-              <button
-                onClick={() => showToast('Already upgraded or Pro activated')}
-                className="w-full bg-black text-white py-2 rounded-lg text-[13px] font-bold hover:bg-zinc-800 transition-colors"
-              >
-                Upgrade to Pro
-              </button>
+              <span className="material-symbols-outlined text-[16px]">account_tree</span>
+              {!isSidebarCollapsed && <span className="text-[12px]">Workflows</span>}
             </div>
 
+            <div
+              className={`flex items-center gap-2 py-2 rounded-lg text-on-surface-variant cursor-pointer hover:bg-zinc-200/50 hover:text-on-surface transition-all font-semibold ${
+                isSidebarCollapsed ? 'justify-center w-10 h-10 p-0 mx-auto' : 'w-[calc(100%+16px)] pl-2 pr-4 text-left'
+              }`}
+            >
+              <span className="material-symbols-outlined text-[16px]">folder_open</span>
+              {!isSidebarCollapsed && <span className="text-[12px]">Assets</span>}
+            </div>
+
+            <div
+              className={`flex items-center gap-2 py-2 rounded-lg text-on-surface-variant cursor-pointer hover:bg-zinc-200/50 hover:text-on-surface transition-all font-semibold ${
+                isSidebarCollapsed ? 'justify-center w-10 h-10 p-0 mx-auto' : 'w-[calc(100%+16px)] pl-2 pr-4 text-left'
+              }`}
+            >
+              <span className="material-symbols-outlined text-[16px]">memory</span>
+              {!isSidebarCollapsed && <span className="text-[12px]">Models</span>}
+            </div>
+
+            <div
+              className={`flex items-center gap-2 py-2 rounded-lg text-on-surface-variant cursor-pointer hover:bg-zinc-200/50 hover:text-on-surface transition-all font-semibold ${
+                isSidebarCollapsed ? 'justify-center w-10 h-10 p-0 mx-auto' : 'w-[calc(100%+16px)] pl-2 pr-4 text-left'
+              }`}
+            >
+              <span className="material-symbols-outlined text-[16px]">history</span>
+              {!isSidebarCollapsed && <span className="text-[12px]">History</span>}
+            </div>
+          </nav>
+
+          {/* Bottom Area */}
+          <div className={`py-4 mt-auto ${isSidebarCollapsed ? 'px-2' : 'pl-4 pr-1'}`}>
+            {/* Bottom Settings Navigation */}
             <div className="space-y-1">
-              <a
-                onClick={() => showToast('Invite referral link copied')}
-                className="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-zinc-200/50 rounded-lg cursor-pointer text-[13px]"
-                href="#"
-              >
-                <span className="material-symbols-outlined text-[20px]">group</span>
-                <span>Invite your team</span>
-              </a>
-              <a
-                onClick={() => showToast('Opened Settings')}
-                className="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-zinc-200/50 rounded-lg cursor-pointer text-[13px]"
-                href="#"
-              >
-                <span className="material-symbols-outlined text-[20px]">settings</span>
-                <span>Settings</span>
-              </a>
-              <a
-                onClick={() => showToast('Opened Help docs')}
-                className="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-zinc-200/50 rounded-lg cursor-pointer text-[13px]"
-                href="#"
-              >
-                <span className="material-symbols-outlined text-[20px]">help_outline</span>
-                <span>Help</span>
-              </a>
+              {[
+                { label: 'Invite your team', icon: 'group' },
+                { label: 'Settings', icon: 'settings' },
+                { label: 'Help', icon: 'help_outline' },
+              ].map((item) => (
+                <div
+                  key={item.label}
+                  className={`flex items-center gap-3 py-2 text-on-surface-variant rounded-lg font-semibold cursor-pointer hover:bg-zinc-200/50 hover:text-on-surface transition-all ${
+                    isSidebarCollapsed ? 'justify-center w-10 h-10 p-0 mx-auto' : 'w-[calc(100%+16px)] pl-2 pr-4 text-[13px] text-left whitespace-nowrap'
+                  }`}
+                  title={isSidebarCollapsed ? item.label : undefined}
+                >
+                  <span className="material-symbols-outlined text-[20px]">{item.icon}</span>
+                  {!isSidebarCollapsed && <span>{item.label}</span>}
+                </div>
+              ))}
             </div>
           </div>
         </aside>
 
         {/* MAIN CONTENT AREA */}
-        <div className="flex-1 h-full flex flex-col pt-16 pb-6 pr-6 pl-6 min-w-0 relative">
-          
+        <div className={`flex-1 h-full flex flex-col pt-12 pb-2 pr-2 min-w-0 relative transition-all duration-300 ${isSidebarCollapsed ? 'pl-0' : 'pl-6'}`}>
+
           {/* Top Header Overlayed */}
-          <header className="absolute top-0 right-0 left-0 h-16 flex justify-end items-center px-10 pointer-events-none z-30">
-            <div className="flex items-center gap-6 pointer-events-auto">
-              {/* Interactive Search toggle */}
-              <div className="flex items-center gap-2 relative">
-                <input
-                  type="text"
-                  placeholder="Search workflows..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className={`px-3 py-1 bg-white/80 backdrop-blur border border-zinc-200 rounded-lg text-xs transition-all duration-300 focus:outline-none focus:border-primary text-on-surface ${
-                    searchVisible || searchQuery ? 'w-48 opacity-100' : 'w-0 opacity-0 pointer-events-none'
-                  }`}
-                />
-                <button
-                  onClick={() => setSearchVisible(!searchVisible)}
-                  className="p-1 hover:bg-zinc-200/50 rounded-full transition-colors flex items-center justify-center focus:outline-none text-on-surface-variant hover:text-on-surface"
-                  title="Search workflows"
-                >
-                  <span className="material-symbols-outlined text-[22px] cursor-pointer">search</span>
-                </button>
+          <header className="absolute top-0 right-0 left-0 h-12 flex justify-end items-center pl-10 pr-5 pointer-events-none z-30">
+            <div className="flex items-center gap-5 pointer-events-auto">
+              {/* Static Notifications */}
+              <div className="relative text-on-surface-variant">
+                <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>notifications</span>
               </div>
 
-              <div className="flex items-center gap-5">
-                {/* Notifications Popover */}
-                <div className="relative">
-                  <button
-                    onClick={() => setNotificationsOpen(!notificationsOpen)}
-                    className="relative p-1 hover:bg-zinc-200/50 rounded-full transition-colors flex items-center justify-center focus:outline-none text-on-surface-variant hover:text-on-surface"
-                  >
-                    {activeNotificationsCount > 0 && (
-                      <span className="absolute -top-1 -right-1 text-[10px] bg-red-500 text-white rounded-full h-4 w-4 flex items-center justify-center border-2 border-[#f0edec] font-bold">
-                        {activeNotificationsCount}
-                      </span>
-                    )}
-                    <span className="material-symbols-outlined text-[24px]">notifications</span>
-                  </button>
-
-                  {notificationsOpen && (
-                    <div className="absolute right-0 mt-2 w-80 bg-white border border-outline-variant/40 rounded-xl shadow-lg z-50 p-4 animate-in fade-in duration-200 text-left">
-                      <div className="flex justify-between items-center mb-3">
-                        <h4 className="font-bold text-sm text-on-surface">Notifications</h4>
-                        {activeNotificationsCount > 0 && (
-                          <button
-                            onClick={() => {
-                              setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
-                              showToast('Cleared notifications');
-                            }}
-                            className="text-[11px] text-primary font-bold hover:underline"
-                          >
-                            Mark all read
-                          </button>
-                        )}
-                      </div>
-                      <div className="space-y-2 max-h-60 overflow-y-auto">
-                        {notifications.length === 0 ? (
-                          <p className="text-[12px] text-on-surface-variant text-center py-4">No notifications</p>
-                        ) : (
-                          notifications.map((n) => (
-                            <div
-                              key={n.id}
-                              onClick={() => {
-                                setNotifications((prev) =>
-                                  prev.map((item) => (item.id === n.id ? { ...item, read: true } : item))
-                                );
-                              }}
-                              className={`p-2.5 rounded-lg border text-left cursor-pointer transition-colors text-[12px] ${
-                                n.read
-                                  ? 'bg-zinc-50 border-zinc-100 text-zinc-600'
-                                  : 'bg-indigo-50/50 border-indigo-100 text-on-surface font-medium'
-                              }`}
-                            >
-                              <div className="flex justify-between items-start gap-2 mb-1">
-                                <span>{n.text}</span>
-                                <span className="text-[9px] text-zinc-400 shrink-0 font-normal">{n.time}</span>
-                              </div>
-                            </div>
-                          ))
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Profile Menu Popover */}
-                <div className="relative">
-                  <button
-                    onClick={() => setProfileMenuOpen(!profileMenuOpen)}
-                    className="p-1 hover:bg-zinc-200/50 rounded-full transition-colors flex items-center justify-center focus:outline-none text-on-surface-variant hover:text-on-surface cursor-pointer"
-                  >
-                    <span className="material-symbols-outlined text-[24px]">person</span>
-                  </button>
-
-                  {profileMenuOpen && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white border border-outline-variant/40 rounded-xl shadow-lg z-50 py-2 text-left">
-                      <div className="px-4 py-2 border-b border-zinc-100">
-                        <p className="text-[13px] font-bold text-on-surface">Thilak</p>
-                        <p className="text-[11px] text-on-surface-variant truncate">thilak@whisperflow.ai</p>
-                      </div>
-                      <Link
-                        href="/"
-                        className="block w-full text-left px-4 py-2 text-[12px] hover:bg-zinc-50 text-on-surface font-medium"
-                      >
-                        Return to Dashboard
-                      </Link>
-                      <div className="border-t border-zinc-100 my-1"></div>
-                      <button
-                        onClick={() => {
-                          setProfileMenuOpen(false);
-                          showToast('Logged out');
-                        }}
-                        className="w-full text-left px-4 py-2 text-[12px] hover:bg-zinc-50 text-red-600"
-                      >
-                        Sign Out
-                      </button>
-                    </div>
-                  )}
-                </div>
+              {/* Static Profile */}
+              <div className="relative text-on-surface-variant">
+                <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>person</span>
               </div>
             </div>
           </header>
@@ -338,49 +230,49 @@ export default function CardDesignPage() {
           </main>
 
           {/* INTEGRATED CONTROL BAR */}
-          <div className="w-full mt-8 mb-4 shrink-0 relative">
-            <div className="max-w-[1440px] mx-auto grid grid-cols-12 gap-6 items-center">
-              
+          <div className="w-full mt-8 mb-4 shrink-0 relative px-4 lg:px-6">
+            <div className="max-w-[1200px] mx-auto w-full grid grid-cols-12 gap-3 xl:gap-6 items-center">
+
               {/* Add Reference Image Button */}
-              <div className="col-span-2">
+              <div className="col-span-3 lg:col-span-2">
                 <button
                   onClick={() => showToast('Select a local sketch reference to upload')}
                   className="w-full h-20 bg-white/50 border-2 border-dashed border-primary/20 rounded-[20px] flex flex-col items-center justify-center cursor-pointer hover:border-primary/45 hover:bg-white/80 active:scale-98 transition-all text-center focus:outline-none shadow-sm"
                 >
                   <span className="material-symbols-outlined text-primary text-[24px] mb-1">cloud_upload</span>
-                  <span className="text-[10px] font-bold text-primary/80 uppercase tracking-widest leading-none">
+                  <span className="text-[9px] xl:text-[10px] font-bold text-primary/80 uppercase tracking-widest leading-none">
                     Add Reference
                   </span>
                 </button>
               </div>
 
               {/* Prompt Input & Generate Box */}
-              <div className="col-span-7 flex items-center bg-white rounded-[24px] p-2 pl-6 shadow-sm border border-black/5 relative">
+              <div className="col-span-6 lg:col-span-7 flex items-center bg-white rounded-[24px] p-2 pl-4 xl:pl-6 shadow-sm border border-black/5 relative">
                 <div className="flex-1">
                   <input
-                    className="w-full bg-transparent border-none text-[16px] text-zinc-800 focus:ring-0 focus:outline-none p-0 placeholder:text-zinc-400 font-medium"
+                    className="w-full bg-transparent border-none text-[14px] xl:text-[16px] text-zinc-800 focus:ring-0 focus:outline-none p-0 placeholder:text-zinc-400 font-medium"
                     type="text"
                     value={prompt}
                     onChange={(e) => setPrompt(e.target.value)}
                   />
                 </div>
-                
-                <div className="flex items-center gap-2 pr-2">
+
+                <div className="flex items-center gap-1 xl:gap-2 pr-1 xl:pr-2">
                   <button
                     onClick={() => setSettingsOpen(!settingsOpen)}
-                    className={`p-2.5 rounded-xl hover:bg-zinc-100 transition-colors focus:outline-none ${
-                      settingsOpen ? 'bg-zinc-100 text-primary' : 'text-zinc-500'
-                    }`}
+                    className={`p-2.5 rounded-xl hover:bg-zinc-100 transition-colors focus:outline-none ${settingsOpen ? 'bg-zinc-100 text-primary' : 'text-zinc-500'
+                      }`}
                     title="Workflow Settings"
                   >
                     <span className="material-symbols-outlined text-[22px]">tune</span>
                   </button>
-                  
+
                   <button
                     onClick={handleGenerate}
-                    className="shimmer-btn bg-black text-white px-8 py-3.5 rounded-xl font-bold flex items-center gap-3 hover:shadow-lg transition-all active:scale-95 text-[14px]"
+                    className="shimmer-btn bg-black text-white px-4 xl:px-8 py-3.5 rounded-xl font-bold flex items-center gap-2 xl:gap-3 hover:shadow-lg transition-all active:scale-95 text-[12px] xl:text-[14px]"
                   >
-                    {isGenerating ? 'GENERATING...' : 'GENERATE'}
+                    <span className="hidden sm:inline">{isGenerating ? 'GENERATING...' : 'GENERATE'}</span>
+                    <span className="sm:hidden">{isGenerating ? 'GEN...' : 'GEN'}</span>
                     <span className="material-symbols-outlined text-[18px]">auto_awesome</span>
                   </button>
                 </div>
@@ -444,38 +336,37 @@ export default function CardDesignPage() {
               </div>
 
               {/* Status Metrics columns */}
-              <div className="col-span-3 flex justify-between gap-4">
+              <div className="col-span-3 flex justify-between gap-2 xl:gap-4">
                 <div className="flex-1 flex flex-col items-center justify-center text-center">
-                  <span className="text-primary font-bold text-[20px] leading-tight">0.8s</span>
-                  <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">
+                  <span className="text-primary font-bold text-[16px] xl:text-[20px] leading-tight">0.8s</span>
+                  <span className="text-[9px] xl:text-[10px] text-zinc-500 font-bold uppercase tracking-wider">
                     Processing
                   </span>
                 </div>
                 <div className="flex-1 flex flex-col items-center justify-center text-center">
-                  <span className="text-primary font-bold text-[20px] leading-tight">4K</span>
-                  <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">
+                  <span className="text-primary font-bold text-[16px] xl:text-[20px] leading-tight">4K</span>
+                  <span className="text-[9px] xl:text-[10px] text-zinc-500 font-bold uppercase tracking-wider">
                     Resolution
                   </span>
                 </div>
                 <div className="flex-1 flex flex-col items-center justify-center text-center">
-                  <span className="text-primary font-bold text-[20px] leading-tight">120</span>
-                  <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">
+                  <span className="text-primary font-bold text-[16px] xl:text-[20px] leading-tight">120</span>
+                  <span className="text-[9px] xl:text-[10px] text-zinc-500 font-bold uppercase tracking-wider">
                     Tokens
                   </span>
                 </div>
               </div>
-              
+
             </div>
           </div>
 
-      </div>
+        </div>
       </div>
 
       {/* TOAST ALERTS */}
       <div
-        className={`fixed bottom-8 right-8 z-50 bg-zinc-900 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 border border-zinc-800 transition-all duration-300 transform ${
-          toast.visible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0 pointer-events-none'
-        }`}
+        className={`fixed bottom-8 right-8 z-50 bg-zinc-900 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 border border-zinc-800 transition-all duration-300 transform ${toast.visible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0 pointer-events-none'
+          }`}
       >
         <span className="material-symbols-outlined text-emerald-400 text-[20px]">check_circle</span>
         <span className="text-xs font-medium">{toast.message}</span>
