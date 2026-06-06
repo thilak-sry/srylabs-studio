@@ -1,5 +1,63 @@
 @import "tailwindcss";
 
+@theme {
+  --color-surface-container: #f0edec;
+  --color-on-secondary-fixed-variant: #6900b3;
+  --color-on-secondary-container: #fffbff;
+  --color-on-tertiary-fixed-variant: #703700;
+  --color-on-tertiary: #ffffff;
+  --color-inverse-primary: #c0c1ff;
+  --color-surface: #fcf9f8;
+  --color-primary: #4648d4;
+  --color-tertiary-container: #b55d00;
+  --color-error-container: #ffdad6;
+  --color-secondary-fixed: #f0dbff;
+  --color-on-primary-fixed-variant: #2f2ebe;
+  --color-on-secondary: #ffffff;
+  --color-surface-tint: #494bd6;
+  --color-outline: #767586;
+  --color-primary-fixed-dim: #c0c1ff;
+  --color-primary-container: #6063ee;
+  --color-on-primary: #ffffff;
+  --color-background: #fcf9f8;
+  --color-surface-variant: #e5e2e1;
+  --color-surface-container-lowest: #ffffff;
+  --color-on-primary-container: #fffbff;
+  --color-on-surface: #1c1b1b;
+  --color-error: #ba1a1a;
+  --color-on-tertiary-container: #fffbff;
+  --color-secondary-fixed-dim: #ddb7ff;
+  --color-tertiary-fixed: #ffdcc5;
+  --color-on-surface-variant: #464554;
+  --color-on-background: #1c1b1b;
+  --color-surface-container-low: #f6f3f2;
+  --color-surface-bright: #fcf9f8;
+  --color-inverse-on-surface: #f3f0ef;
+  --color-surface-container-high: #ebe7e7;
+  --color-secondary: #8127cf;
+  --color-inverse-surface: #313030;
+  --color-on-error-container: #93000a;
+  --color-surface-dim: #dcd9d9;
+  --color-outline-variant: #c7c4d7;
+  --color-on-secondary-fixed: #2c0051;
+  --color-secondary-container: #9c48ea;
+  --color-primary-fixed: #e1e0ff;
+  --color-on-primary-fixed: #07006c;
+  --color-tertiary-fixed-dim: #ffb783;
+  --color-on-tertiary-fixed: #301400;
+  --color-tertiary: #904900;
+  --color-surface-container-highest: #e5e2e1;
+  --color-on-error: #ffffff;
+
+  --font-family-body-lg: Geist, sans-serif;
+  --font-family-headline-lg-mobile: Geist, sans-serif;
+  --font-family-headline-xl: Geist, sans-serif;
+  --font-family-headline-lg: Geist, sans-serif;
+  --font-family-body-md: Geist, sans-serif;
+  --font-family-label-md: Geist, sans-serif;
+  --font-family-headline-md: Geist, sans-serif;
+}
+
 html, body, #root {
   margin: 0;
   padding: 0;
@@ -7,6 +65,38 @@ html, body, #root {
   height: 100%;
   background-color: transparent;
   overflow: hidden;
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Geist', 'Inter', system-ui, sans-serif;
   user-select: none;
+}
+
+/* Glassmorphism utility for the main installer card */
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
+}
+
+/* Subtle animated gradient background for the hero area */
+.hero-gradient {
+  background: linear-gradient(135deg, rgba(240, 237, 236, 0.8) 0%, rgba(229, 226, 225, 0.6) 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-gradient::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(129, 39, 207, 0.05) 0%, transparent 60%);
+  animation: rotate 20s linear infinite;
+}
+
+@keyframes rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }

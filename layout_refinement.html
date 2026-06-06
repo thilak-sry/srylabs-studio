@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en" style=""><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SRY Studio - AI Content Generation Workspace</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-variant": "#e5e2e1",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed": "#07006c",
+                        "surface-container-highest": "#e5e2e1",
+                        "surface-tint": "#494bd6",
+                        "surface-container-low": "#f6f3f2",
+                        "on-secondary-fixed-variant": "#6900b3",
+                        "on-error": "#ffffff",
+                        "tertiary": "#904900",
+                        "surface-dim": "#dcd9d9",
+                        "on-tertiary-container": "#fffbff",
+                        "surface": "#fcf9f8",
+                        "secondary-fixed": "#f0dbff",
+                        "on-tertiary": "#ffffff",
+                        "on-surface": "#1c1b1b",
+                        "on-secondary-container": "#fffbff",
+                        "background": "#fcf9f8",
+                        "on-background": "#1c1b1b",
+                        "on-surface-variant": "#464554",
+                        "inverse-on-surface": "#f3f0ef",
+                        "surface-container": "#f0edec",
+                        "on-error-container": "#93000a",
+                        "inverse-surface": "#313030",
+                        "secondary": "#8127cf",
+                        "surface-bright": "#fcf9f8",
+                        "tertiary-container": "#b55d00",
+                        "primary-fixed": "#e1e0ff",
+                        "on-primary-fixed-variant": "#2f2ebe",
+                        "tertiary-fixed": "#ffdcc5",
+                        "error": "#ba1a1a",
+                        "primary": "#4648d4",
+                        "inverse-primary": "#c0c1ff",
+                        "secondary-fixed-dim": "#ddb7ff",
+                        "surface-container-high": "#ebe7e7",
+                        "on-tertiary-fixed-variant": "#703700",
+                        "tertiary-fixed-dim": "#ffb783",
+                        "primary-container": "#6063ee",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-fixed": "#301400",
+                        "on-primary": "#ffffff",
+                        "on-primary-container": "#fffbff",
+                        "secondary-container": "#9c48ea",
+                        "outline-variant": "#c7c4d7",
+                        "error-container": "#ffdad6",
+                        "outline": "#767586",
+                        "primary-fixed-dim": "#c0c1ff",
+                        "on-secondary-fixed": "#2c0051"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "20px",
+                        "container-max": "1440px",
+                        "base-unit": "8px",
+                        "margin-desktop": "40px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Geist", "sans-serif"],
+                        "body-md": ["Geist", "sans-serif"],
+                        "headline-md": ["Geist", "sans-serif"],
+                        "body-lg": ["Geist", "sans-serif"],
+                        "label-md": ["Geist", "sans-serif"],
+                        "headline-xl": ["Geist", "sans-serif"],
+                        "headline-lg-mobile": ["Geist", "sans-serif"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["30px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                        "body-md": ["15px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "headline-md": ["22px", {"lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "500"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "label-md": ["13px", {"lineHeight": "1.4", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                        "headline-xl": ["40px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: #fcf9f8; color: #1c1b1b; overflow: hidden; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+        }
+        .soft-shadow { box-shadow: 0 4px 24px rgba(0,0,0,0.03); }
+        .slider-handle {
+            width: 4px;
+            background: white;
+            position: absolute;
+            top: 0; bottom: 0; left: 50%;
+            transform: translateX(-50%);
+            cursor: ew-resize;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            z-index: 10;
+        }
+        .slider-button {
+            width: 32px; height: 32px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            color: #1c1b1b;
+        }
+        .image-compare-container {
+            position: relative;
+            overflow: hidden;
+            width: 100%; height: 100%;
+            border-radius: 1.5rem;
+        }
+        .image-before {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-size: cover;
+            background-position: center;
+            z-index: 1;
+        }
+        .image-after {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-size: cover;
+            background-position: center;
+            clip-path: inset(0 0 0 50%);
+            z-index: 2;
+        }
+        
+        /* Custom Scrollbar for Right Panel */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #e5e2e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #c7c4d7; }
+    </style>
+</head>
+<body class="h-screen w-screen flex font-body-md text-body-md bg-background" style="cursor: default;">
+<!-- LEFT PANE: SideNavBar -->
+<aside class="bg-surface border-r border-outline-variant shadow-sm w-[260px] flex flex-col shrink-0 h-full overflow-y-auto">
+<!-- Brand / Header -->
+<div class="px-6 py-8 flex items-center gap-2">
+<span class="font-headline-lg font-bold text-on-surface">Flow</span>
+<span class="bg-secondary text-on-secondary text-[10px] font-bold px-1.5 py-0.5 rounded-md tracking-wider">PRO</span>
+</div>
+<!-- Navigation Links -->
+<div class="flex flex-col w-full px-3 space-y-1">
+<!-- Home (Active) -->
+<a class="flex items-center w-full p-2.5 rounded-lg text-on-surface bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined text-[22px] shrink-0">grid_view</span>
+<span class="ml-3 font-label-md text-label-md">Home</span>
+</a>
+<!-- Insights -->
+<a class="flex items-center w-full p-2.5 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-colors justify-between" href="#">
+<div class="flex items-center">
+<span class="material-symbols-outlined text-[22px]">insights</span>
+<span class="ml-3 font-label-md text-label-md">Insights</span>
+</div>
+<span class="bg-[#f27429] text-white text-[10px] px-1.5 py-0.5 rounded-md font-bold">New!</span>
+</a>
+<!-- Dictionary -->
+<a class="flex items-center w-full p-2.5 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined text-[22px]">menu_book</span>
+<span class="ml-3 font-label-md text-label-md">Dictionary</span>
+</a>
+<!-- Snippets -->
+<a class="flex items-center w-full p-2.5 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined text-[22px]">code</span>
+<span class="ml-3 font-label-md text-label-md">Snippets</span>
+</a>
+</div>
+<div class="mt-auto w-full flex flex-col">
+<!-- Trial Card -->
+<div class="bg-surface-container rounded-xl p-4 mx-3 mb-4 border border-outline-variant/30 flex flex-col gap-3">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Trial ends in 14 days</span>
+<button class="w-full py-2 rounded-lg bg-primary text-on-primary font-label-md text-[13px] hover:bg-primary/90 transition-colors shadow-sm">
+                Upgrade to Pro
+            </button>
+</div>
+<!-- Secondary Navigation Links -->
+<div class="flex flex-col w-full px-3 pb-6 space-y-1">
+<a class="flex items-center w-full p-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">group_add</span>
+<span class="ml-3 font-label-md text-label-md">Invite your team</span>
+</a>
+<a class="flex items-center w-full p-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">redeem</span>
+<span class="ml-3 font-label-md text-label-md">Get a free month</span>
+</a>
+<a class="flex items-center w-full p-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+<span class="ml-3 font-label-md text-label-md">Settings</span>
+</a>
+<a class="flex items-center w-full p-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">help</span>
+<span class="ml-3 font-label-md text-label-md">Help</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- MAIN CONTENT AREA -->
+<div class="flex-1 flex flex-col h-full overflow-hidden">
+<!-- Top Header -->
+<header class="h-16 flex items-center justify-end px-6 gap-5 bg-background shrink-0">
+<button class="text-on-surface-variant hover:text-on-surface transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-[24px]">search</span>
+</button>
+<button class="text-on-surface-variant hover:text-on-surface transition-colors flex items-center justify-center relative">
+<span class="material-symbols-outlined text-[24px]">notifications</span>
+<span class="absolute -top-1 -right-1 bg-error text-on-error text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">1</span>
+</button>
+<div class="w-[1px] h-6 bg-outline-variant mx-1"></div>
+<button class="rounded-full overflow-hidden border border-outline-variant/50 hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50">
+<img alt="User Profile" class="w-8 h-8 object-cover" src="https://lh3.googleusercontent.com/aida/AP1WRLv_wPKqQNXuG2h0ECEyrQBPXo3g1hsN6uLkdodO6bX30l4l8eXNFP326U1t_YaXzfJcjCID0Jrz5EVpaH5cUarOj6XwGWBt46gV0wEMsj9mN2YZzJqfrIVeESwe_3ymSNMYIhhMzbRNAMIGqru88etwT6tyIrcAavPfu_xNScs94dAWLGHfzK-SgGMy-1emUuL0LMeDfpskGnG5wZ8gi28Io97YhbBWbq0GHyYczPeSR8GIDMhORI98Yg"/>
+</button>
+</header>
+<main class="flex-1 flex p-4 pt-0 gap-4 overflow-hidden relative z-10 transition-all duration-300">
+<!-- CENTER PANE: Canvas -->
+<div class="flex-1 flex flex-col relative rounded-[24px] bg-surface-container-lowest border border-outline-variant/50 shadow-sm overflow-hidden h-full">
+<!-- Top Toolbar / Smart Actions -->
+<div class="absolute top-4 left-4 right-4 z-20 flex justify-between items-center pointer-events-none">
+<div class="flex gap-2 pointer-events-auto">
+<div class="glass-panel rounded-full flex items-center px-2 py-1 shadow-sm">
+<button class="p-2 rounded-full hover:bg-surface-container-high text-on-surface transition-colors flex items-center justify-center group relative">
+<span class="material-symbols-outlined text-[20px]">undo</span>
+<div class="absolute top-full mt-2 hidden group-hover:block bg-inverse-surface text-inverse-on-surface text-[11px] px-2 py-1 rounded shadow-lg whitespace-nowrap">Undo</div>
+</button>
+<button class="p-2 rounded-full hover:bg-surface-container-high text-on-surface transition-colors flex items-center justify-center group relative">
+<span class="material-symbols-outlined text-[20px]">redo</span>
+<div class="absolute top-full mt-2 hidden group-hover:block bg-inverse-surface text-inverse-on-surface text-[11px] px-2 py-1 rounded shadow-lg whitespace-nowrap">Redo</div>
+</button>
+</div>
+</div>
+<div class="glass-panel rounded-full flex items-center px-2 py-1 gap-1 shadow-sm pointer-events-auto">
+<button aria-label="Regenerate" class="p-2 rounded-full hover:bg-surface-container-high text-on-surface transition-colors flex items-center justify-center group relative">
+<span class="material-symbols-outlined text-[20px]">refresh</span>
+</button>
+<button aria-label="Upscale" class="p-2 rounded-full hover:bg-surface-container-high text-on-surface transition-colors flex items-center justify-center group relative">
+<span class="material-symbols-outlined text-[20px]">high_quality</span>
+</button>
+<button aria-label="Variation" class="p-2 rounded-full hover:bg-surface-container-high text-on-surface transition-colors flex items-center justify-center group relative">
+<span class="material-symbols-outlined text-[20px]">style</span>
+</button>
+<div class="w-[1px] h-4 bg-outline-variant mx-1"></div>
+<button aria-label="Share" class="p-2 rounded-full hover:bg-surface-container-high text-on-surface transition-colors flex items-center justify-center group relative">
+<span class="material-symbols-outlined text-[20px]">share</span>
+</button>
+<button aria-label="Export" class="p-2 rounded-full hover:bg-surface-container-high text-on-surface transition-colors flex items-center justify-center group relative">
+<span class="material-symbols-outlined text-[20px]">download</span>
+</button>
+</div>
+</div>
+<!-- Immersive Generation Canvas (Before/After Slider) -->
+<div class="flex-1 p-4 pt-16 pb-24 w-full h-full relative">
+<div class="image-compare-container shadow-lg">
+<!-- Before Image (Base Sketch / Prompt setup) -->
+<div class="image-before bg-surface-container" data-alt="A minimal, rough structural sketch or low-fidelity render of flowing abstract shapes in a muted gray tone. Soft, flat lighting characteristic of a raw 3D scene setup before textures and advanced lighting are applied, maintaining a clean, technical studio aesthetic." style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBs4_sGzkvs7qyCqGDQZNRJ2pyt6c0l2uAsCaHzVavEKV3wm607Ee3y814wqMknJcTJrithwCP1-zuC8Sp9REwdyln_tBBNIVf6Tinse8hBrs64DzG7plNDukMi1WU_SDbsiXbNprOABkue9ECLrbnnvmLvZxE8Siv4yUu2yFKeLI8IhRD6mYGbE3EhnEX7sKuFj8sVVRYbFR6Gs9bMqYT9y5yLH7b7r0_iwk00IiK_dmUSBcZypdnx8ILYCQxkToa7D8M2uH08t0A");'></div>
+<!-- After Image (High Fidelity Render) -->
+<div class="image-after bg-surface-container-lowest" data-alt="A cinematic, high-fidelity 3D render of ethereal flowing glass ribbons suspended in space. Refracting soft lavender and subtle blue light, creating a highly polished, premium, well-funded AI startup visual vibe. The background is a sophisticated off-white gradient, emphasizing minimalist luxury and technological elegance." id="slider-after" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCi7BpYNChNcoV2K3iFzD4WreaKKuKOBEchiJ4yHXlZbUouD-nqV-mnTm-aa3tMPD29NEsVuJkFV6806f0tSW3Aq-REF1Y9loWDKV1pT9nHnLHFmcY6dPj4Rb1TJQ3_e8nhnDtdUgNP9gEQVzvVeCmJJaAiFYMwacGpU7BK_MSohrxpBoh0O90i1NqRZ1QIKsKkMH3EBPzlHZUcNwlKiUmT5C44nVsGOSM_2o0Sj18YXy2IfgiEQQpGC3CKVsobgd68jIllrkxFxzA");'></div>
+<!-- Slider Handle -->
+<div class="slider-handle" id="slider-handle">
+<div class="slider-button">
+<span class="material-symbols-outlined text-[16px]">swap_horiz</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Floating Command Center Prompt Dock -->
+</div>
+<!-- RIGHT PANE: Control & History -->
+<aside class="w-[320px] shrink-0 h-full flex flex-col gap-4 overflow-hidden rounded-[24px] z-10 relative">
+<!-- Top: Advanced Settings Card -->
+<div class="bg-surface-container-lowest rounded-[24px] border border-outline-variant/50 shadow-sm p-5 flex flex-col gap-6 shrink-0"><div class="flex justify-between items-center mb-2"><h2 class="text-headline-md font-headline-md text-on-surface">Settings</h2><button class="text-on-surface-variant hover:text-on-surface"><span class="material-symbols-outlined text-[20px]">more_vert</span></button></div><div class="flex flex-col gap-4"><div class="flex flex-col gap-2"><label class="text-label-md font-label-md text-on-surface-variant">Prompt</label><div class="bg-surface-container rounded-xl p-3 border border-outline-variant/30"><textarea class="w-full bg-transparent border-none outline-none focus:ring-0 resize-none text-body-md font-body-md text-on-surface placeholder:text-outline p-0 overflow-hidden" placeholder="Describe your vision..." rows="3" style="min-height: 80px;">Ethereal flowing 3D glass ribbons with soft lavender refractions, cinematic lighting, ultra-high detail, 8k resolution, minimalist off-white background.</textarea></div></div><div class="flex items-center justify-between"><div class="flex items-center gap-2"><button class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant shadow-sm shrink-0 hover:scale-105 transition-transform group relative"><img alt="Reference" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDKE8LDeLPsfC-VR7RsFQbJcYFzGCwx7xYmflj5VJgUR2gz4t2QOg1cWAJ3aRW7FiFF1Q7oYtUswHKEVBoewysL2oxjxzWiu_ghmSXTa_aMzwJoHSuYFyyZag6TMFd2UB24QzhGxspmQztvFGbCUzcJNyAIPs9gVTQ3BwBFKeLtnfPI3QQtV3GT7zXUb9anxBzWi35BUpo7PYu11anE4HnRt_HI5oVO0DAfOVMaNt0Iw9qTccTf0aqdxrlOOB5VnU5F15QrpPNJmf8"/></button><button class="p-2 text-on-surface-variant hover:text-on-surface transition-colors shrink-0"><span class="material-symbols-outlined text-[20px]">tune</span></button></div><div class="flex flex-col gap-2 flex-1 ml-4"><label class="text-label-md font-label-md text-on-surface-variant">Aspect Ratio</label><div class="flex gap-1"><button class="px-2 py-1 rounded-full border border-primary bg-primary/10 text-primary text-[11px]">16:9</button><button class="px-2 py-1 rounded-full border border-outline-variant text-on-surface-variant text-[11px]">1:1</button><button class="px-2 py-1 rounded-full border border-outline-variant text-on-surface-variant text-[11px]">9:16</button></div></div></div><button class="w-full h-12 rounded-xl bg-primary text-on-primary font-label-md text-label-md flex items-center justify-center gap-2 hover:bg-primary/90 transition-all shadow-md"><span class="material-symbols-outlined text-[20px]">temp_preferences_custom</span>Generate</button></div></div>
+<!-- Bottom: History Grid -->
+<div class="bg-surface-container-lowest rounded-[24px] border border-outline-variant/50 shadow-sm p-4 flex-1 flex flex-col overflow-hidden">
+<div class="flex justify-between items-center mb-4 shrink-0">
+<h3 class="text-headline-md font-headline-md text-on-surface text-[18px]">Recent</h3>
+<button class="text-primary text-label-md font-label-md hover:underline">View All</button>
+</div>
+<div class="flex-1 overflow-y-auto pr-2 pb-2 grid grid-cols-2 gap-2 content-start">
+<!-- History Thumbnails -->
+<div class="aspect-square rounded-xl bg-surface-container overflow-hidden relative group cursor-pointer border border-outline-variant/30">
+<img alt="Recent 1" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="A variation thumbnail of ethereal glass ribbons, similar to the main canvas but with slightly different light refractions. Minimalist, premium AI startup aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAeX5K2M0K4jZ3ND8bxjdyXmeycp8L5r53jHsdyuIm3QisIclqDg9xD6RNMcEgSLMcsWoLjckSdvq36SF2n1WhVlssq6fFamfB5iCC1odtmA5CTzxH37i1H0-frezQcoIsJFKgX7nd4sG8ydz2Xfzbq6SSwFNMnJyFRS0_pDLTva2qGP0Qvy9LZd9l1lU11lFKngRpXVwb3u5TGvO29egySkKKgjqdomFOFF71kVW4bWiVXgPgh0InsW-TpNRTOfRspS0GkweI-D5Y"/>
+<div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+<span class="material-symbols-outlined text-white">open_in_full</span>
+</div>
+</div>
+<div class="aspect-square rounded-xl bg-surface-container overflow-hidden relative group cursor-pointer border border-outline-variant/30">
+<img alt="Recent 2" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="A high-end 3D render thumbnail showing abstract, smooth organic forms in monochrome gray with sharp rim lighting. Clean studio background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBqAMaqaP8UDB3KC70u3Sl4Dz1_Yx5zELSh0B6NZgXMT9kWqTI3Qpcph9ZDx_yHpc6gpRumOjSt9pgynkEUPHQpF7yxrLkeKpK_NFoU5L0pH3VzdhoawJL-kikghBEcHmZhGiau5Rlv45jUWvofiAt0wmKtbr1bOnTra504yeFWiXmHcciyUeWDy2EaebNW2bOemguUoDqAqWJmERn6m1SDZqsnK-V9Do62FAJyIBtwvkePEoXcey2Ay2havyjUOOwhAfhDyo5vMVA"/>
+<div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+<span class="material-symbols-outlined text-white">open_in_full</span>
+</div>
+</div>
+<div class="aspect-square rounded-xl bg-surface-container overflow-hidden relative group cursor-pointer border border-outline-variant/30">
+<img alt="Recent 3" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="A high-end 3D render thumbnail showing glossy, soft pink and lavender geometric shapes floating on a white surface. Minimalist and luxurious." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBIbWj9DxSs4o5eewFfKebiqP4Df6OrfzNbHmGJxel9oiW1P4bw2eAXPmTM8ySmAc4C23Uy-PiHJy1iIpFIm6BWBhVfj0TTY3TnRov8i4uDW8yPLgO1fOQfyqhTh9pYnX_VLBArxHj004dscFPe2LHTcuc7MYOJ2m7gN7VVFn_QSIzr5PwcmyAB4NAJ_PFrVByGFP5dkTZjhb7vz94V8BLt8Sdy6GtmAvlDfYuUKu5urA2QUR4DuYzugjn4q1yGwM0INjJo6IxLzhk"/>
+<div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+<span class="material-symbols-outlined text-white">open_in_full</span>
+</div>
+</div>
+<div class="aspect-square rounded-xl bg-surface-container overflow-hidden relative group cursor-pointer border border-outline-variant/30">
+<div class="w-full h-full flex items-center justify-center text-outline bg-surface animate-pulse">
+<span class="material-symbols-outlined text-[32px] opacity-50">hourglass_empty</span>
+</div>
+</div>
+</div>
+</div>
+</aside>
+</main>
+</div>
+<script>
+        // Auto-expand textarea script
+        const textarea = document.querySelector('textarea');
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+            if(this.scrollHeight > 150) {
+                this.style.overflowY = 'auto';
+                this.style.height = '150px';
+            } else {
+                this.style.overflowY = 'hidden';
+            }
+        });
+
+        // Image Compare Slider Logic
+        const sliderHandle = document.getElementById('slider-handle');
+        const sliderAfter = document.getElementById('slider-after');
+        const container = document.querySelector('.image-compare-container');
+        
+        let isDragging = false;
+
+        sliderHandle.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            document.body.style.cursor = 'ew-resize';
+        });
+
+        window.addEventListener('mouseup', () => {
+            isDragging = false;
+            document.body.style.cursor = 'default';
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            
+            const rect = container.getBoundingClientRect();
+            let x = e.clientX - rect.left;
+            
+            // Constrain to container
+            if (x < 0) x = 0;
+            if (x > rect.width) x = rect.width;
+            
+            const percentage = (x / rect.width) * 100;
+            
+            sliderHandle.style.left = `${percentage}%`;
+            sliderAfter.style.clipPath = `inset(0 0 0 ${percentage}%)`;
+        });
+    </script>
+</body></html>

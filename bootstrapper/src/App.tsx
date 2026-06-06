@@ -1,20 +1,52 @@
 import { useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
-import { CheckCircle2, ChevronRight, Loader2, X } from "lucide-react";
 import logoUrl from './assets/logo.png';
 
 function App() {
-  const [step, setStep] = useState(0); // 0: Welcome, 1: Installing, 2: Success
+  const [step, setStep] = useState(0); // 0: Welcome, 1: Preferences, 2: Installing, 3: Success
   const [error, setError] = useState("");
+  const [installPath, setInstallPath] = useState("C:\\Users\\thilak\\AppData\\Local\\Programs\\SRY Studio");
+  const [createDesktopShortcut, setCreateDesktopShortcut] = useState(true);
+  const [createStartMenuShortcut, setCreateStartMenuShortcut] = useState(true);
+  const [installProgress, setInstallProgress] = useState(0);
+  const [installStatus, setInstallStatus] = useState("");
 
   const handleInstall = async () => {
-    setStep(1);
+    setStep(2); // Transition to Installing Progress Screen
+    setError("");
+    setInstallProgress(5);
+    setInstallStatus("Initializing installation...");
+
+    // Simulate progress increments for a smooth install experience
+    let progress = 5;
+    const interval = setInterval(() => {
+      progress += Math.floor(Math.random() * 8) + 3;
+      if (progress >= 95) progress = 95; // Cap at 95% until backend invocation resolves
+      setInstallProgress(progress);
+
+      if (progress < 30) {
+        setInstallStatus("Extracting core application binaries...");
+      } else if (progress < 60) {
+        setInstallStatus("Configuring system directory structures...");
+      } else if (progress < 85) {
+        setInstallStatus("Setting up shortcuts and configurations...");
+      } else {
+        setInstallStatus("Finalizing SRY Studio installation...");
+      }
+    }, 450);
+
     try {
       await invoke("install_app");
-      setStep(2);
+      clearInterval(interval);
+      setInstallProgress(100);
+      setInstallStatus("Installation completed successfully!");
+      setTimeout(() => {
+        setStep(3); // Success Screen
+      }, 600);
     } catch (e) {
+      clearInterval(interval);
       setError(String(e));
-      setStep(0);
+      setStep(1); // Go back to preferences to show the error
     }
   };
 
@@ -35,105 +67,281 @@ function App() {
   };
 
   return (
-    <div className="flex flex-col h-screen w-full bg-[#f5f4f0] text-[#1c1b1b] rounded-xl border border-[#c7c4d7]/50 shadow-2xl overflow-hidden font-sans">
-      {/* Title Bar (Draggable) */}
-      <div 
-        data-tauri-drag-region 
-        className="h-10 w-full flex items-center justify-between px-4 bg-[#fcf9f8]/80 backdrop-blur-md border-b border-[#c7c4d7]/50 select-none"
-      >
-        <div data-tauri-drag-region className="flex items-center gap-2 text-sm font-medium text-[#464554]">
-          <img src={logoUrl} alt="Logo" className="w-4 h-4 object-contain pointer-events-none" />
-          SRY Studio Setup
+    <div className="flex h-screen w-screen bg-[#F6F3F2] p-0 overflow-hidden font-sans select-none relative">
+      {/* Main Glass Installer Card */}
+      <main className="glass-card rounded-2xl w-full h-full flex flex-row overflow-hidden relative border border-outline-variant/30">
+        
+        {/* Custom Window Control Dots (macOS style) absolute in top-left */}
+        <div className="absolute top-4 left-4 flex gap-1.5 z-30">
+          <button 
+            onClick={closeWindow} 
+            title="Close" 
+            className="w-3 h-3 rounded-full bg-[#ba1a1a] hover:opacity-85 transition-opacity cursor-pointer border-none outline-none"
+            aria-label="Close window"
+          />
+          <button 
+            title="Minimize" 
+            className="w-3 h-3 rounded-full bg-[#767586]/40 border-none outline-none cursor-default"
+            aria-label="Minimize window"
+          />
+          <button 
+            title="Maximize" 
+            className="w-3 h-3 rounded-full bg-[#767586]/20 border-none outline-none cursor-default"
+            aria-label="Maximize window"
+          />
         </div>
-        <button 
-          onClick={closeWindow}
-          className="p-1.5 hover:bg-[#ffdad6] hover:text-[#ba1a1a] rounded-md transition-colors text-[#767586]"
+
+        {/* Left Sidebar Panel - Branding & Steps */}
+        <section 
+          data-tauri-drag-region
+          className="w-[230px] bg-surface-container-lowest/40 border-r border-outline-variant/30 flex flex-col justify-between p-6 pt-14 relative z-10 shrink-0"
         >
-          <X className="w-4 h-4" />
-        </button>
-      </div>
-
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col p-8 relative">
-        {/* Background Subtle Gradients */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-[#4648d4]/10 rounded-full blur-[100px] pointer-events-none" />
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#8127cf]/10 rounded-full blur-[100px] pointer-events-none" />
-
-        <div className="flex-1 flex flex-col items-center justify-center text-center z-10">
-          {step === 0 && (
-            <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
-              <div className="w-32 h-32 mx-auto rounded-3xl bg-white p-2 shadow-lg shadow-[#4648d4]/10 border border-[#e1e0ff]">
-                <div className="w-full h-full bg-[#fcf9f8] rounded-[18px] flex items-center justify-center overflow-hidden">
-                  <img src={logoUrl} alt="SRY Studio Logo" className="w-24 h-24 object-contain" />
-                </div>
+          <div>
+            {/* Branding */}
+            <div data-tauri-drag-region className="flex items-center gap-2.5 mb-10">
+              <div className="w-8 h-8 rounded-full overflow-hidden bg-on-surface flex items-center justify-center shadow-sm shrink-0">
+                <img src={logoUrl} alt="Logo" className="w-5 h-5 object-contain" />
               </div>
-              <div className="space-y-2">
-                <h1 className="text-4xl font-bold tracking-tight text-[#1c1b1b]">SRY Studio</h1>
-                <p className="text-[#464554] text-lg">The future of AI Workspaces.</p>
-              </div>
-              {error && (
-                <div className="bg-[#ffdad6] text-[#ba1a1a] p-3 rounded-lg text-sm border border-[#ba1a1a]/20">
-                  {error}
-                </div>
-              )}
-            </div>
-          )}
-
-          {step === 1 && (
-            <div className="space-y-8 w-full max-w-sm animate-in fade-in zoom-in-95 duration-500">
-              <div className="flex justify-center">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-[#4648d4] rounded-full blur-xl opacity-20 animate-pulse" />
-                  <Loader2 className="w-16 h-16 text-[#4648d4] animate-spin relative z-10" />
-                </div>
-              </div>
-              <div className="space-y-3">
-                <h2 className="text-xl font-semibold text-[#1c1b1b]">Installing SRY Studio...</h2>
-                <p className="text-[#464554] text-sm">Please wait while we set things up for you.</p>
-                <div className="h-2 w-full bg-[#e1e0ff] rounded-full overflow-hidden">
-                  <div className="h-full bg-gradient-to-r from-[#4648d4] to-[#8127cf] w-full animate-[pulse_2s_ease-in-out_infinite]" />
-                </div>
+              <div>
+                <h1 className="text-sm font-bold text-on-surface tracking-tight leading-none">SRY Studio</h1>
+                <p className="text-[10px] font-medium text-on-surface-variant leading-none mt-1">Premium Installer</p>
               </div>
             </div>
-          )}
 
-          {step === 2 && (
-            <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <div className="flex justify-center">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-green-500 rounded-full blur-xl opacity-20" />
-                  <CheckCircle2 className="w-20 h-20 text-green-600 relative z-10" />
+            {/* Step Indicators */}
+            <nav className="flex flex-col gap-5 mt-6">
+              {/* Step: Welcome */}
+              <div className={`flex items-center gap-3 transition-opacity duration-300 ${step === 0 ? "opacity-100" : "opacity-60"}`}>
+                {step > 0 ? (
+                  <span className="material-symbols-outlined text-primary text-[20px] font-semibold" style={{ fontVariationSettings: '"FILL" 1' }}>check_circle</span>
+                ) : (
+                  <span className="material-symbols-outlined text-primary text-[20px]" style={{ fontVariationSettings: '"FILL" 1' }}>radio_button_checked</span>
+                )}
+                <span className={`text-xs ${step === 0 ? "font-semibold text-on-surface" : "font-medium text-on-surface-variant"}`}>Welcome</span>
+              </div>
+
+              {/* Step: Preferences */}
+              <div className={`flex items-center gap-3 transition-opacity duration-300 ${step === 1 ? "opacity-100" : step < 1 ? "opacity-40" : "opacity-60"}`}>
+                {step > 1 ? (
+                  <span className="material-symbols-outlined text-primary text-[20px] font-semibold" style={{ fontVariationSettings: '"FILL" 1' }}>check_circle</span>
+                ) : step === 1 ? (
+                  <span className="material-symbols-outlined text-primary text-[20px]" style={{ fontVariationSettings: '"FILL" 1' }}>radio_button_checked</span>
+                ) : (
+                  <span className="material-symbols-outlined text-on-surface-variant text-[20px]">radio_button_unchecked</span>
+                )}
+                <span className={`text-xs ${step === 1 ? "font-semibold text-on-surface" : "font-medium text-on-surface-variant"}`}>Preferences</span>
+              </div>
+
+              {/* Step: Install */}
+              <div className={`flex items-center gap-3 transition-opacity duration-300 ${step >= 2 ? "opacity-100" : "opacity-40"}`}>
+                {step > 2 ? (
+                  <span className="material-symbols-outlined text-primary text-[20px] font-semibold" style={{ fontVariationSettings: '"FILL" 1' }}>check_circle</span>
+                ) : step === 2 ? (
+                  <span className="material-symbols-outlined text-primary text-[20px]" style={{ fontVariationSettings: '"FILL" 1' }}>radio_button_checked</span>
+                ) : (
+                  <span className="material-symbols-outlined text-on-surface-variant text-[20px]">radio_button_unchecked</span>
+                )}
+                <span className={`text-xs ${step >= 2 ? "font-semibold text-on-surface" : "font-medium text-on-surface-variant"}`}>Install</span>
+              </div>
+            </nav>
+          </div>
+
+          {/* Footer Info */}
+          <div data-tauri-drag-region className="mt-auto">
+            <p className="text-[10px] font-medium text-on-surface-variant/40">v0.1.0 • Beta Channel</p>
+          </div>
+        </section>
+
+        {/* Right Content Panel */}
+        <section 
+          data-tauri-drag-region
+          className="flex-1 flex flex-col p-8 pt-14 relative z-10 overflow-hidden"
+        >
+          {/* Subtle design system background glows */}
+          <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-bl from-secondary-fixed/15 via-transparent to-transparent pointer-events-none z-0" />
+          <div className="absolute bottom-0 left-0 w-full h-full bg-gradient-to-tr from-primary-fixed/8 via-transparent to-transparent pointer-events-none z-0" />
+
+          <div className="flex-1 flex flex-col z-10 relative h-full">
+            {step === 0 && (
+              <div className="flex-1 flex flex-col justify-center animate-in fade-in duration-500">
+                {/* Branding Icon */}
+                <div className="mb-6 flex justify-start">
+                  <div className="w-14 h-14 rounded-full overflow-hidden bg-on-surface flex items-center justify-center shadow-md">
+                    <img src={logoUrl} alt="SRY Studio Logo" className="w-10 h-10 object-contain" />
+                  </div>
+                </div>
+
+                {/* Text Block */}
+                <h2 className="text-2xl font-bold text-on-surface mb-3 tracking-tight">Welcome to SRY Studio</h2>
+                <p className="text-xs text-on-surface-variant leading-relaxed max-w-[420px] mb-8">
+                  Your AI workspace for building, creating and shipping faster. Get ready to experience a new standard of productivity.
+                </p>
+
+                {/* Actions */}
+                <div className="flex items-center gap-3 mt-auto">
+                  <button 
+                    onClick={() => setStep(1)} 
+                    className="px-5 py-2.5 rounded-lg bg-on-surface text-surface text-xs font-semibold hover:bg-inverse-surface transition-all duration-200 shadow-sm flex items-center gap-1.5 group cursor-pointer"
+                  >
+                    Get Started
+                    <span className="material-symbols-outlined text-sm group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
+                  </button>
+                  <button 
+                    className="px-5 py-2.5 rounded-lg bg-transparent border border-outline-variant text-on-surface text-xs font-semibold hover:bg-surface-container-high transition-colors duration-200 cursor-pointer"
+                  >
+                    View Release Notes
+                  </button>
                 </div>
               </div>
-              <div className="space-y-2">
-                <h2 className="text-3xl font-bold text-[#1c1b1b]">Ready to Go</h2>
-                <p className="text-[#464554]">SRY Studio has been successfully installed.</p>
-              </div>
-            </div>
-          )}
-        </div>
+            )}
 
-        {/* Footer Actions */}
-        <div className="mt-auto flex justify-end z-10 pt-6">
-          {step === 0 && (
-            <button
-              onClick={handleInstall}
-              className="flex items-center gap-2 px-6 py-3 bg-[#ffffff] text-[#4648d4] rounded-lg font-semibold hover:bg-[#e1e0ff] transition-all hover:scale-105 active:scale-95 shadow-md shadow-[#4648d4]/10 border border-[#e1e0ff]"
-            >
-              Install Now
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          )}
-          {step === 2 && (
-            <button
-              onClick={handleLaunch}
-              className="flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-[#4648d4] to-[#8127cf] text-white rounded-lg font-semibold hover:opacity-90 transition-all hover:scale-105 active:scale-95 shadow-lg shadow-[#4648d4]/20"
-            >
-              Launch Studio
-            </button>
-          )}
-        </div>
-      </div>
+            {step === 1 && (
+              <div className="flex-1 flex flex-col justify-center animate-in fade-in duration-500">
+                <h2 className="text-2xl font-bold text-on-surface mb-2 tracking-tight">Preferences</h2>
+                <p className="text-xs text-on-surface-variant leading-relaxed max-w-[420px] mb-5">
+                  Customize where and how you would like SRY Studio to be installed.
+                </p>
+
+                {/* Errors display */}
+                {error && (
+                  <div className="mb-4 bg-[#ffdad6] text-[#ba1a1a] p-3 rounded-lg text-xs border border-[#ba1a1a]/20 flex items-start gap-2 max-w-[440px]">
+                    <span className="material-symbols-outlined text-base shrink-0 mt-0.5">error</span>
+                    <div className="flex-1 font-medium">{error}</div>
+                  </div>
+                )}
+
+                {/* Form fields */}
+                <div className="space-y-4 max-w-[440px]">
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">Installation Folder</label>
+                    <div className="flex gap-2">
+                      <input 
+                        type="text" 
+                        value={installPath}
+                        onChange={(e) => setInstallPath(e.target.value)}
+                        className="flex-1 bg-surface-container-low/50 border border-outline-variant/30 rounded-xl px-3 py-2 text-xs font-mono text-on-surface outline-none focus:border-primary/50 transition-colors"
+                      />
+                      <button 
+                        onClick={() => {}} // Browse is decorative/typeable for tauri configurations
+                        className="px-3.5 py-2 bg-transparent border border-outline-variant text-on-surface rounded-xl hover:bg-surface-container-high text-xs font-medium transition-colors cursor-pointer"
+                      >
+                        Browse...
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2 pt-1.5">
+                    <label className="flex items-center gap-2.5 cursor-pointer text-xs text-on-surface select-none">
+                      <input 
+                        type="checkbox" 
+                        checked={createDesktopShortcut}
+                        onChange={(e) => setCreateDesktopShortcut(e.target.checked)}
+                        className="w-4 h-4 rounded text-primary focus:ring-primary border-outline-variant/50 cursor-pointer accent-primary"
+                      />
+                      Create a desktop shortcut
+                    </label>
+                    <label className="flex items-center gap-2.5 cursor-pointer text-xs text-on-surface select-none">
+                      <input 
+                        type="checkbox" 
+                        checked={createStartMenuShortcut}
+                        onChange={(e) => setCreateStartMenuShortcut(e.target.checked)}
+                        className="w-4 h-4 rounded text-primary focus:ring-primary border-outline-variant/50 cursor-pointer accent-primary"
+                      />
+                      Create a Start Menu folder
+                    </label>
+                  </div>
+                </div>
+
+                {/* Navigation Buttons */}
+                <div className="flex items-center gap-3 mt-auto justify-end">
+                  <button 
+                    onClick={() => { setError(""); setStep(0); }} 
+                    className="px-5 py-2.5 rounded-lg bg-transparent border border-outline-variant text-on-surface text-xs font-semibold hover:bg-surface-container-high transition-colors duration-200 cursor-pointer"
+                  >
+                    Back
+                  </button>
+                  <button 
+                    onClick={handleInstall} 
+                    className="px-5 py-2.5 rounded-lg bg-on-surface text-surface text-xs font-semibold hover:bg-inverse-surface transition-all duration-200 shadow-sm flex items-center gap-1.5 cursor-pointer"
+                  >
+                    Install Now
+                    <span className="material-symbols-outlined text-sm">download</span>
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {step === 2 && (
+              <div className="flex-1 flex flex-col justify-center animate-in fade-in duration-500">
+                <h2 className="text-2xl font-bold text-on-surface mb-2 tracking-tight">Installing SRY Studio</h2>
+                <p className="text-xs text-on-surface-variant leading-relaxed max-w-[420px] mb-8">
+                  We are setting up your new workspace environment. This will only take a moment.
+                </p>
+
+                {/* Progress bar structure */}
+                <div className="space-y-3.5 max-w-[420px] w-full">
+                  <div className="flex justify-between items-center text-xs">
+                    <span className="text-on-surface-variant font-medium">{installStatus}</span>
+                    <span className="text-primary font-bold">{installProgress}%</span>
+                  </div>
+                  <div className="h-2 w-full bg-surface-container rounded-full overflow-hidden border border-outline-variant/20">
+                    <div 
+                      className="h-full bg-gradient-to-r from-primary to-secondary transition-all duration-300"
+                      style={{ width: `${installProgress}%` }}
+                    />
+                  </div>
+                  <div className="text-[10px] text-on-surface-variant/50 flex items-center gap-1">
+                    <span className="material-symbols-outlined text-xs animate-spin">sync</span>
+                    Do not close the installer window during installation.
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {step === 3 && (
+              <div className="flex-1 flex flex-col justify-center animate-in fade-in duration-500">
+                {/* Installed DIV success illustration */}
+                <div className="mb-6 flex justify-start">
+                  <div className="relative flex items-center justify-center">
+                    <div className="absolute w-12 h-12 bg-primary/20 rounded-full blur-xl opacity-60 animate-pulse z-0" />
+                    <span 
+                      className="material-symbols-outlined text-primary text-[56px] relative z-10" 
+                      style={{ fontVariationSettings: '"FILL" 1' }}
+                    >
+                      check_circle
+                    </span>
+                  </div>
+                </div>
+
+                <h2 className="text-2xl font-bold text-on-surface mb-3 tracking-tight">Ready to Go</h2>
+                <p className="text-xs text-on-surface-variant leading-relaxed max-w-[420px] mb-8">
+                  SRY Studio has been successfully installed. You can now launch your new workspace and start building.
+                </p>
+
+                {/* Error launch fallback */}
+                {error && (
+                  <div className="mb-4 bg-[#ffdad6] text-[#ba1a1a] p-3 rounded-lg text-xs border border-[#ba1a1a]/20 flex items-start gap-2 max-w-[420px]">
+                    <span className="material-symbols-outlined text-base shrink-0">warning</span>
+                    <div className="flex-1 font-medium">{error}</div>
+                  </div>
+                )}
+
+                {/* Actions */}
+                <div className="mt-auto">
+                  <button 
+                    onClick={handleLaunch} 
+                    className="px-6 py-3 rounded-lg bg-on-surface text-surface text-xs font-semibold hover:bg-inverse-surface transition-all duration-200 shadow-md flex items-center gap-1.5 group cursor-pointer"
+                  >
+                    Launch Studio
+                    <span className="material-symbols-outlined text-sm group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </section>
+
+      </main>
     </div>
   );
 }
