@@ -1,4 +1,6 @@
-use tauri::{AppHandle, Manager};
+use tauri::AppHandle;
+
+#[cfg(target_os = "windows")]
 use std::process::Command;
 
 #[cfg(target_os = "windows")]
@@ -68,11 +70,28 @@ fn close_app() {
     std::process::exit(0);
 }
 
+#[cfg(target_os = "windows")]
+#[tauri::command]
+fn get_default_path() -> Result<String, String> {
+    let local_app_data = std::env::var("LOCALAPPDATA")
+        .map_err(|_| "Failed to get LOCALAPPDATA".to_string())?;
+    let path = std::path::Path::new(&local_app_data)
+        .join("Programs")
+        .join("SRY Studio");
+    Ok(path.to_string_lossy().into_owned())
+}
+
+#[cfg(not(target_os = "windows"))]
+#[tauri::command]
+fn get_default_path() -> Result<String, String> {
+    Ok("C:\\Users\\Default\\AppData\\Local\\Programs\\SRY Studio".to_string())
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![install_app, launch_app, close_app])
+        .invoke_handler(tauri::generate_handler![install_app, launch_app, close_app, get_default_path])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

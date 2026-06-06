@@ -1,15 +1,23 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import logoUrl from './assets/logo.png';
 
 function App() {
   const [step, setStep] = useState(0); // 0: Welcome, 1: Preferences, 2: Installing, 3: Success
   const [error, setError] = useState("");
-  const [installPath, setInstallPath] = useState("C:\\Users\\thilak\\AppData\\Local\\Programs\\SRY Studio");
+  const [installPath, setInstallPath] = useState("");
   const [createDesktopShortcut, setCreateDesktopShortcut] = useState(true);
-  const [createStartMenuShortcut, setCreateStartMenuShortcut] = useState(true);
   const [installProgress, setInstallProgress] = useState(0);
   const [installStatus, setInstallStatus] = useState("");
+
+  useEffect(() => {
+    invoke<string>("get_default_path")
+      .then((path) => setInstallPath(path))
+      .catch((err) => {
+        console.error("Failed to get default path:", err);
+        setInstallPath("C:\\Users\\Default\\AppData\\Local\\Programs\\SRY Studio");
+      });
+  }, []);
 
   const handleInstall = async () => {
     setStep(2); // Transition to Installing Progress Screen
@@ -70,29 +78,29 @@ function App() {
     <div className="flex h-screen w-screen bg-[#F6F3F2] p-0 overflow-hidden font-sans select-none relative">
       {/* Main Glass Installer Card */}
       <main className="glass-card rounded-2xl w-full h-full flex flex-row overflow-hidden relative border border-outline-variant/30">
-        
+
         {/* Custom Window Control Dots (macOS style) absolute in top-left */}
         <div className="absolute top-4 left-4 flex gap-1.5 z-30">
-          <button 
-            onClick={closeWindow} 
-            title="Close" 
+          <button
+            onClick={closeWindow}
+            title="Close"
             className="w-3 h-3 rounded-full bg-[#ba1a1a] hover:opacity-85 transition-opacity cursor-pointer border-none outline-none"
             aria-label="Close window"
           />
-          <button 
-            title="Minimize" 
+          <button
+            title="Minimize"
             className="w-3 h-3 rounded-full bg-[#767586]/40 border-none outline-none cursor-default"
             aria-label="Minimize window"
           />
-          <button 
-            title="Maximize" 
+          <button
+            title="Maximize"
             className="w-3 h-3 rounded-full bg-[#767586]/20 border-none outline-none cursor-default"
             aria-label="Maximize window"
           />
         </div>
 
         {/* Left Sidebar Panel - Branding & Steps */}
-        <section 
+        <section
           data-tauri-drag-region
           className="w-[230px] bg-surface-container-lowest/40 border-r border-outline-variant/30 flex flex-col justify-between p-6 pt-14 relative z-10 shrink-0"
         >
@@ -146,14 +154,11 @@ function App() {
             </nav>
           </div>
 
-          {/* Footer Info */}
-          <div data-tauri-drag-region className="mt-auto">
-            <p className="text-[10px] font-medium text-on-surface-variant/40">v0.1.0 • Beta Channel</p>
-          </div>
+
         </section>
 
         {/* Right Content Panel */}
-        <section 
+        <section
           data-tauri-drag-region
           className="flex-1 flex flex-col p-8 pt-14 relative z-10 overflow-hidden"
         >
@@ -179,14 +184,14 @@ function App() {
 
                 {/* Actions */}
                 <div className="flex items-center gap-3 mt-auto">
-                  <button 
-                    onClick={() => setStep(1)} 
+                  <button
+                    onClick={() => setStep(1)}
                     className="px-5 py-2.5 rounded-lg bg-on-surface text-surface text-xs font-semibold hover:bg-inverse-surface transition-all duration-200 shadow-sm flex items-center gap-1.5 group cursor-pointer"
                   >
                     Get Started
                     <span className="material-symbols-outlined text-sm group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
                   </button>
-                  <button 
+                  <button
                     className="px-5 py-2.5 rounded-lg bg-transparent border border-outline-variant text-on-surface text-xs font-semibold hover:bg-surface-container-high transition-colors duration-200 cursor-pointer"
                   >
                     View Release Notes
@@ -215,14 +220,14 @@ function App() {
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">Installation Folder</label>
                     <div className="flex gap-2">
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         value={installPath}
                         onChange={(e) => setInstallPath(e.target.value)}
                         className="flex-1 bg-surface-container-low/50 border border-outline-variant/30 rounded-xl px-3 py-2 text-xs font-mono text-on-surface outline-none focus:border-primary/50 transition-colors"
                       />
-                      <button 
-                        onClick={() => {}} // Browse is decorative/typeable for tauri configurations
+                      <button
+                        onClick={() => { }} // Browse is decorative/typeable for tauri configurations
                         className="px-3.5 py-2 bg-transparent border border-outline-variant text-on-surface rounded-xl hover:bg-surface-container-high text-xs font-medium transition-colors cursor-pointer"
                       >
                         Browse...
@@ -232,36 +237,28 @@ function App() {
 
                   <div className="space-y-2 pt-1.5">
                     <label className="flex items-center gap-2.5 cursor-pointer text-xs text-on-surface select-none">
-                      <input 
-                        type="checkbox" 
+                      <input
+                        type="checkbox"
                         checked={createDesktopShortcut}
                         onChange={(e) => setCreateDesktopShortcut(e.target.checked)}
                         className="w-4 h-4 rounded text-primary focus:ring-primary border-outline-variant/50 cursor-pointer accent-primary"
                       />
                       Create a desktop shortcut
                     </label>
-                    <label className="flex items-center gap-2.5 cursor-pointer text-xs text-on-surface select-none">
-                      <input 
-                        type="checkbox" 
-                        checked={createStartMenuShortcut}
-                        onChange={(e) => setCreateStartMenuShortcut(e.target.checked)}
-                        className="w-4 h-4 rounded text-primary focus:ring-primary border-outline-variant/50 cursor-pointer accent-primary"
-                      />
-                      Create a Start Menu folder
-                    </label>
+
                   </div>
                 </div>
 
                 {/* Navigation Buttons */}
                 <div className="flex items-center gap-3 mt-auto justify-end">
-                  <button 
-                    onClick={() => { setError(""); setStep(0); }} 
+                  <button
+                    onClick={() => { setError(""); setStep(0); }}
                     className="px-5 py-2.5 rounded-lg bg-transparent border border-outline-variant text-on-surface text-xs font-semibold hover:bg-surface-container-high transition-colors duration-200 cursor-pointer"
                   >
                     Back
                   </button>
-                  <button 
-                    onClick={handleInstall} 
+                  <button
+                    onClick={handleInstall}
                     className="px-5 py-2.5 rounded-lg bg-on-surface text-surface text-xs font-semibold hover:bg-inverse-surface transition-all duration-200 shadow-sm flex items-center gap-1.5 cursor-pointer"
                   >
                     Install Now
@@ -285,7 +282,7 @@ function App() {
                     <span className="text-primary font-bold">{installProgress}%</span>
                   </div>
                   <div className="h-2 w-full bg-surface-container rounded-full overflow-hidden border border-outline-variant/20">
-                    <div 
+                    <div
                       className="h-full bg-gradient-to-r from-primary to-secondary transition-all duration-300"
                       style={{ width: `${installProgress}%` }}
                     />
@@ -304,8 +301,8 @@ function App() {
                 <div className="mb-6 flex justify-start">
                   <div className="relative flex items-center justify-center">
                     <div className="absolute w-12 h-12 bg-primary/20 rounded-full blur-xl opacity-60 animate-pulse z-0" />
-                    <span 
-                      className="material-symbols-outlined text-primary text-[56px] relative z-10" 
+                    <span
+                      className="material-symbols-outlined text-primary text-[56px] relative z-10"
                       style={{ fontVariationSettings: '"FILL" 1' }}
                     >
                       check_circle
@@ -328,8 +325,8 @@ function App() {
 
                 {/* Actions */}
                 <div className="mt-auto">
-                  <button 
-                    onClick={handleLaunch} 
+                  <button
+                    onClick={handleLaunch}
                     className="px-6 py-3 rounded-lg bg-on-surface text-surface text-xs font-semibold hover:bg-inverse-surface transition-all duration-200 shadow-md flex items-center gap-1.5 group cursor-pointer"
                   >
                     Launch Studio
