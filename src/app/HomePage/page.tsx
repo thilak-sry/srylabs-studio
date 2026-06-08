@@ -393,8 +393,8 @@ export default function HomePage() {
                     }
                   }}
                   className={`flex items-center py-2 rounded-lg transition-all duration-300 ease-in-out text-left font-semibold cursor-pointer ${isSidebarCollapsed
-                      ? 'justify-center w-10 h-10 p-0 mx-auto'
-                      : 'w-[calc(100%+16px)] pl-2 pr-4'
+                    ? 'justify-center w-10 h-10 p-0 mx-auto'
+                    : 'w-[calc(100%+16px)] pl-2 pr-4'
                     } ${isSelected
                       ? 'sidebar-active text-on-surface'
                       : 'text-on-surface-variant hover:bg-zinc-200/50 hover:text-on-surface'
@@ -402,8 +402,8 @@ export default function HomePage() {
                 >
                   <span className="material-symbols-outlined text-[16px] shrink-0">{item.icon}</span>
                   <span className={`text-[12px] transition-all duration-300 ease-in-out overflow-hidden whitespace-nowrap ${isSidebarCollapsed
-                      ? 'opacity-0 max-w-0 ml-0 pointer-events-none'
-                      : 'opacity-100 max-w-[120px] ml-2'
+                    ? 'opacity-0 max-w-0 ml-0 pointer-events-none'
+                    : 'opacity-100 max-w-[120px] ml-2'
                     }`}>
                     {item.label}
                   </span>
@@ -424,15 +424,15 @@ export default function HomePage() {
                 <div
                   key={item.label}
                   className={`flex items-center py-2 text-on-surface-variant rounded-lg font-semibold cursor-pointer hover:bg-zinc-200/50 hover:text-on-surface transition-all duration-300 ease-in-out ${isSidebarCollapsed
-                      ? 'justify-center w-10 h-10 p-0 mx-auto'
-                      : 'w-[calc(100%+16px)] pl-2 pr-4 text-[13px] text-left whitespace-nowrap'
+                    ? 'justify-center w-10 h-10 p-0 mx-auto'
+                    : 'w-[calc(100%+16px)] pl-2 pr-4 text-[13px] text-left whitespace-nowrap'
                     }`}
                   title={isSidebarCollapsed ? item.label : undefined}
                 >
                   <span className="material-symbols-outlined text-[20px] shrink-0">{item.icon}</span>
                   <span className={`transition-all duration-300 ease-in-out overflow-hidden whitespace-nowrap ${isSidebarCollapsed
-                      ? 'opacity-0 max-w-0 ml-0 pointer-events-none'
-                      : 'opacity-100 max-w-[120px] ml-3 text-[13px]'
+                    ? 'opacity-0 max-w-0 ml-0 pointer-events-none'
+                    : 'opacity-100 max-w-[120px] ml-3 text-[13px]'
                     }`}>
                     {item.label}
                   </span>
