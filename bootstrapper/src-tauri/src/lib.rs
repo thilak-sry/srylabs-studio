@@ -5,7 +5,7 @@ use std::process::Command;
 
 #[cfg(target_os = "windows")]
 #[tauri::command]
-async fn install_app(app: AppHandle) -> Result<(), String> {
+async fn install_app(app: AppHandle, install_path: String) -> Result<(), String> {
     // Embed the installer directly into the binary at compile time
     let installer_bytes = include_bytes!("../../assets/SRY Studio.exe");
     
@@ -16,9 +16,11 @@ async fn install_app(app: AppHandle) -> Result<(), String> {
     std::fs::write(&installer_path, installer_bytes)
         .map_err(|e| format!("Failed to extract installer payload: {}", e))?;
 
-    // Execute the installer silently
+    // Execute the installer silently with a custom destination path
+    // NSIS requires /D=<path> to be the last argument and not wrapped in quotes
     let status = Command::new(&installer_path)
         .arg("/S")
+        .arg(format!("/D={}", install_path))
         .status()
         .map_err(|e| format!("Failed to run installer: {}", e))?;
 
@@ -33,7 +35,7 @@ async fn install_app(app: AppHandle) -> Result<(), String> {
 
 #[cfg(not(target_os = "windows"))]
 #[tauri::command]
-async fn install_app(_app: AppHandle) -> Result<(), String> {
+async fn install_app(_app: AppHandle, _install_path: String) -> Result<(), String> {
     Err("Installation is only supported on Windows".to_string())
 }
 
@@ -87,11 +89,26 @@ fn get_default_path() -> Result<String, String> {
     Ok("C:\\Users\\Default\\AppData\\Local\\Programs\\SRY Studio".to_string())
 }
 
+#[tauri::command]
+async fn select_directory() -> Result<Option<String>, String> {
+    let result = rfd::FileDialog::new()
+        .set_title("Select Installation Folder")
+        .pick_folder();
+    
+    Ok(result.map(|path| path.to_string_lossy().into_owned()))
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![install_app, launch_app, close_app, get_default_path])
+        .invoke_handler(tauri::generate_handler![
+            install_app,
+            launch_app,
+            close_app,
+            get_default_path,
+            select_directory
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

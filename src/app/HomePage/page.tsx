@@ -44,6 +44,10 @@ export default function HomePage() {
   const [gpuHours, setGpuHours] = useState(14.2);
   const [imagesGenerated, setImagesGenerated] = useState(128);
 
+  // Mascot Hover and Perspective States
+  const [mascotMouseOffset, setMascotMouseOffset] = useState({ x: 0, y: 0 });
+  const [isMascotHovered, setIsMascotHovered] = useState(false);
+
   // Active runs tracker
   const [runningWorkflowId, setRunningWorkflowId] = useState<string | null>(null);
   const [runningProgress, setRunningProgress] = useState(0);
@@ -414,6 +418,19 @@ export default function HomePage() {
 
           {/* Bottom Area */}
           <div className={`py-4 mt-auto transition-all duration-300 ease-in-out ${isSidebarCollapsed ? 'px-2' : 'pl-4 pr-1'}`}>
+            {/* Quick Tip Widget */}
+            {!isSidebarCollapsed && (
+              <div className="bg-[#f8f0ff] rounded-xl p-4 border border-[#e1e0ff] mb-4 text-left animate-in fade-in duration-300">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="material-symbols-outlined text-[#4648d4] text-[18px]">lightbulb</span>
+                  <h5 className="font-bold text-[13px] text-[#4648d4]">Quick Tip</h5>
+                </div>
+                <p className="text-[11px] text-[#464554] leading-relaxed">
+                  Use the "Character Consistency" workflow to keep faces identical across multiple image generations.
+                </p>
+              </div>
+            )}
+
             {/* Bottom Settings Navigation */}
             <div className="space-y-1">
               {[
@@ -605,9 +622,121 @@ export default function HomePage() {
                     {/* RIGHT COLUMN */}
                     <div className="w-full lg:w-[260px] xl:w-[280px] space-y-6 shrink-0 text-left pb-10 lg:pb-0">
 
+                      {/* AURA AI MASCOT WIDGET */}
+                      <div
+                        onMouseMove={(e) => {
+                          const rect = e.currentTarget.getBoundingClientRect();
+                          const x = (e.clientX - rect.left) / rect.width - 0.5;
+                          const y = (e.clientY - rect.top) / rect.height - 0.5;
+                          setMascotMouseOffset({ x, y });
+                        }}
+                        onMouseEnter={() => setIsMascotHovered(true)}
+                        onMouseLeave={() => {
+                          setIsMascotHovered(false);
+                          setMascotMouseOffset({ x: 0, y: 0 });
+                        }}
+                        className="rounded-[24px] p-6 border border-outline-variant/20 bg-[#f5f4f0] shadow-sm transition-all duration-300 relative overflow-hidden group w-full select-none"
+                        style={{
+                          perspective: '1000px',
+                        }}
+                      >
+                        <div className="relative z-10 flex flex-col items-center text-center">
+                          {/* 3D Mascot Stage */}
+                          <div
+                            className="w-40 h-40 mb-4 relative flex items-center justify-center"
+                            style={{
+                              transform: `rotateY(${mascotMouseOffset.x * 30}deg) rotateX(${-mascotMouseOffset.y * 30}deg) translateZ(10px)`,
+                              transformStyle: 'preserve-3d',
+                              transition: isMascotHovered ? 'none' : 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)',
+                            }}
+                          >
+                            {/* Orbiting 3D Ring 1 */}
+                            <div
+                              className="absolute border border-zinc-400/20 rounded-full w-44 h-16 pointer-events-none animate-[mascot-spin_8s_linear_infinite]"
+                              style={{
+                                transform: 'rotateX(72deg) rotateY(12deg)',
+                                transformStyle: 'preserve-3d',
+                              }}
+                            />
+                            {/* Orbiting 3D Ring 2 */}
+                            <div
+                              className="absolute border border-zinc-400/25 rounded-full w-36 h-36 pointer-events-none animate-[mascot-spin_12s_linear_infinite_reverse]"
+                              style={{
+                                transform: 'rotateX(45deg) rotateY(-25deg)',
+                                transformStyle: 'preserve-3d',
+                              }}
+                            />
+
+                            {/* Floating Living Mascot */}
+                            <img
+                              alt="Aura AI Mascot"
+                              className="w-32 h-32 object-contain pointer-events-none animate-[mascot-float_4s_ease-in-out_infinite]"
+                              src="/aura-mascot.png"
+                              style={{
+                                transformStyle: 'preserve-3d',
+                                transform: 'translateZ(25px)',
+                                filter: 'drop-shadow(0 8px 16px rgba(139, 92, 246, 0.12))',
+                              }}
+                            />
+
+                            {/* Particle elements drifting in space */}
+                            <span
+                              className="absolute w-1.5 h-1.5 bg-zinc-400/50 rounded-full blur-[0.5px] animate-[mascot-particle1_6s_ease-in-out_infinite]"
+                              style={{ top: '15%', left: '15%' }}
+                            />
+                            <span
+                              className="absolute w-1 h-1 bg-zinc-400/60 rounded-full blur-[0.5px] animate-[mascot-particle2_8s_ease-in-out_infinite]"
+                              style={{ bottom: '20%', right: '15%' }}
+                            />
+                            <span
+                              className="absolute w-2 h-2 bg-zinc-400/40 rounded-full blur-[1px] animate-[mascot-particle3_7s_ease-in-out_infinite]"
+                              style={{ top: '40%', right: '10%' }}
+                            />
+                          </div>
+
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="w-2 h-2 bg-[#10B981] rounded-full animate-pulse"></span>
+                            <span className="text-[11px] font-bold text-[#4648d4] uppercase tracking-widest">AURA IS ONLINE</span>
+                          </div>
+                          <h5 className="text-[18px] font-bold text-[#1c1b1b] mb-2">Hello Thilak!</h5>
+                          <p className="text-[12.5px] text-[#464554] leading-relaxed">
+                            I'm here to help you optimize your creative flow today.
+                          </p>
+                        </div>
+
+                        {/* Inline styles for keyframes */}
+                        <style dangerouslySetInnerHTML={{
+                          __html: `
+                          @keyframes mascot-float {
+                            0%, 100% {
+                              transform: translateY(0px) rotate(0deg) translateZ(25px);
+                            }
+                            50% {
+                              transform: translateY(-6px) rotate(0.8deg) translateZ(25px);
+                            }
+                          }
+                          @keyframes mascot-spin {
+                            0% { transform: rotateX(72deg) rotateY(12deg) rotateZ(0deg); }
+                            100% { transform: rotateX(72deg) rotateY(12deg) rotateZ(360deg); }
+                          }
+                          @keyframes mascot-particle1 {
+                            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; }
+                            50% { transform: translate(12px, -8px) scale(1.2); opacity: 0.8; }
+                          }
+                          @keyframes mascot-particle2 {
+                            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.4; }
+                            50% { transform: translate(-15px, 6px) scale(0.8); opacity: 0.7; }
+                          }
+                          @keyframes mascot-particle3 {
+                            0%, 100% { transform: translate(0, 0) scale(0.9); opacity: 0.2; }
+                            50% { transform: translate(8px, 12px) scale(1.1); opacity: 0.6; }
+                          }
+                        `}} />
+                      </div>
+
                       {/* WORKFLOW STATS WIDGET */}
-                      <div className="bg-[#f5f4f0] rounded-[24px] p-6 border border-outline-variant/20 shadow-sm">
-                        <div className="space-y-2 mb-6">
+                      <div className="bg-[#f5f4f0] rounded-[24px] p-5 border border-outline-variant/20 shadow-sm">
+                        <div className="space-y-1.5 mb-4">
                           <div className="flex items-baseline gap-3">
                             <span className="text-[24px] font-serif">{imagesGenerated}</span>
                             <span className="text-on-surface-variant text-[12px]">images generated</span>
@@ -623,12 +752,9 @@ export default function HomePage() {
                         </div>
 
                         {/* CREDIT BAR */}
-                        <div className="pt-8 border-t border-outline-variant/30">
-                          <h5 className="font-bold text-[15px] mb-2">Usage Credit</h5>
-                          <p className="text-[13px] text-on-surface-variant mb-6 leading-relaxed">
-                            Track your remaining compute power for the current billing cycle.
-                          </p>
-                          <div className="relative h-1.5 w-full bg-outline-variant/30 rounded-full mb-2 overflow-hidden">
+                        <div className="pt-4 border-t border-outline-variant/30">
+                          <h5 className="font-bold text-[14px] mb-1.5">Usage Credit</h5>
+                          <div className="relative h-1.5 w-full bg-outline-variant/30 rounded-full mb-1.5 overflow-hidden">
                             <div
                               className="absolute left-0 top-0 h-full bg-purple-500 rounded-full transition-all duration-500"
                               style={{ width: `${(credits / 1000) * 100}%` }}
@@ -642,16 +768,6 @@ export default function HomePage() {
                         </div>
                       </div>
 
-                      {/* TIP WIDGET */}
-                      <div className="bg-[#fcf9f8] rounded-[24px] p-6 border border-outline-variant/30 shadow-sm">
-                        <div className="flex items-center gap-3 mb-4">
-                          <span className="material-symbols-outlined text-primary text-xl">lightbulb</span>
-                          <h5 className="font-bold text-[14px] text-on-surface">Quick Tip</h5>
-                        </div>
-                        <p className="text-[13px] text-on-surface-variant leading-relaxed">
-                          Use the "Character Consistency" workflow to keep faces identical across multiple image generations.
-                        </p>
-                      </div>
                     </div>
                   </div>
                 </div>
