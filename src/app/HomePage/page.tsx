@@ -283,7 +283,7 @@ export default function HomePage() {
                     localStorage.setItem("firstLaunchDone", "true");
                     setShowOnboarding(false);
                   }}
-                  className="px-5 py-2.5 rounded-lg bg-[#1c1b1b] text-white text-xs font-semibold hover:bg-[#313030] transition-all duration-200 shadow-sm flex items-center gap-1.5 group cursor-pointer"
+                  className="px-5 py-2.5 rounded-lg bg-[#1c1b1b] text-white text-xs font-semibold hover:bg-[#313030] transition-all duration-200 shadow-sm flex items-center gap-2.5 group cursor-pointer"
                 >
                   Get Started
                   <span className="material-symbols-outlined text-sm group-hover:translate-x-0.5 transition-transform">
@@ -367,7 +367,7 @@ export default function HomePage() {
                 className="object-contain shrink-0"
                 style={{ width: '24px', height: '24px' }}
               />
-              <h1 className={`font-headline-md text-[17px] font-bold tracking-tight transition-all duration-300 ease-in-out overflow-hidden whitespace-nowrap ${isSidebarCollapsed ? 'opacity-0 max-w-0 ml-0 pointer-events-none' : 'opacity-100 max-w-[120px] ml-2'}`}>
+              <h1 className={`font-headline-md text-[17px] font-bold tracking-tight transition-all duration-300 ease-in-out overflow-hidden whitespace-nowrap ${isSidebarCollapsed ? 'opacity-0 max-w-0 ml-0 pointer-events-none' : 'opacity-100 max-w-[120px] ml-3.5'}`}>
                 SRY Studio
               </h1>
             </div>
@@ -403,7 +403,7 @@ export default function HomePage() {
                   <span className="material-symbols-outlined text-[16px] shrink-0">{item.icon}</span>
                   <span className={`text-[12px] transition-all duration-300 ease-in-out overflow-hidden whitespace-nowrap ${isSidebarCollapsed
                     ? 'opacity-0 max-w-0 ml-0 pointer-events-none'
-                    : 'opacity-100 max-w-[120px] ml-2'
+                    : 'opacity-100 max-w-[120px] ml-3.5'
                     }`}>
                     {item.label}
                   </span>
@@ -432,7 +432,7 @@ export default function HomePage() {
                   <span className="material-symbols-outlined text-[20px] shrink-0">{item.icon}</span>
                   <span className={`transition-all duration-300 ease-in-out overflow-hidden whitespace-nowrap ${isSidebarCollapsed
                     ? 'opacity-0 max-w-0 ml-0 pointer-events-none'
-                    : 'opacity-100 max-w-[120px] ml-3 text-[13px]'
+                    : 'opacity-100 max-w-[120px] ml-3.5 text-[13px]'
                     }`}>
                     {item.label}
                   </span>
@@ -589,7 +589,7 @@ export default function HomePage() {
 
                                     <div className="flex items-center text-primary font-bold text-[13px] mt-auto">
                                       <span>{isExecuting ? 'Processing' : wf.status === 'completed' ? 'Finished (Run again)' : 'Open'}</span>
-                                      <span className="material-symbols-outlined text-[18px] ml-1 transition-transform group-hover:translate-x-1">
+                                      <span className="material-symbols-outlined text-[18px] ml-2 transition-transform group-hover:translate-x-1">
                                         chevron_right
                                       </span>
                                     </div>

@@ -44,7 +44,11 @@ function App() {
     }, 450);
 
     try {
-      await invoke("install_app");
+      if ((window as any).__TAURI_INTERNALS__) {
+        await invoke("install_app");
+      } else {
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+      }
       clearInterval(interval);
       setInstallProgress(100);
       setInstallStatus("Installation completed successfully!");
@@ -186,7 +190,7 @@ function App() {
                 <div className="flex items-center gap-3 mt-auto">
                   <button
                     onClick={() => setStep(1)}
-                    className="px-5 py-2.5 rounded-lg bg-on-surface text-surface text-xs font-semibold hover:bg-inverse-surface transition-all duration-200 shadow-sm flex items-center gap-1.5 group cursor-pointer"
+                    className="px-5 py-2.5 rounded-lg bg-on-surface text-surface text-xs font-semibold hover:bg-inverse-surface transition-all duration-200 shadow-sm flex items-center gap-2.5 group cursor-pointer"
                   >
                     Get Started
                     <span className="material-symbols-outlined text-sm group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
@@ -259,7 +263,7 @@ function App() {
                   </button>
                   <button
                     onClick={handleInstall}
-                    className="px-5 py-2.5 rounded-lg bg-on-surface text-surface text-xs font-semibold hover:bg-inverse-surface transition-all duration-200 shadow-sm flex items-center gap-1.5 cursor-pointer"
+                    className="px-5 py-2.5 rounded-lg bg-on-surface text-surface text-xs font-semibold hover:bg-inverse-surface transition-all duration-200 shadow-sm flex items-center gap-2.5 cursor-pointer"
                   >
                     Install Now
                     <span className="material-symbols-outlined text-sm">download</span>
@@ -283,7 +287,7 @@ function App() {
                   </div>
                   <div className="h-2 w-full bg-surface-container rounded-full overflow-hidden border border-outline-variant/20">
                     <div
-                      className="h-full bg-gradient-to-r from-primary to-secondary transition-all duration-300"
+                      className="h-full bg-primary transition-all duration-300"
                       style={{ width: `${installProgress}%` }}
                     />
                   </div>
@@ -327,7 +331,7 @@ function App() {
                 <div className="mt-auto">
                   <button
                     onClick={handleLaunch}
-                    className="px-6 py-3 rounded-lg bg-on-surface text-surface text-xs font-semibold hover:bg-inverse-surface transition-all duration-200 shadow-md flex items-center gap-1.5 group cursor-pointer"
+                    className="px-6 py-3 rounded-lg bg-on-surface text-surface text-xs font-semibold hover:bg-inverse-surface transition-all duration-200 shadow-md flex items-center gap-2.5 group cursor-pointer"
                   >
                     Launch Studio
                     <span className="material-symbols-outlined text-sm group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
