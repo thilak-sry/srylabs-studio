@@ -41,19 +41,22 @@ async fn install_app(_app: AppHandle, _install_path: String) -> Result<(), Strin
 
 #[cfg(target_os = "windows")]
 #[tauri::command]
-fn launch_app() -> Result<(), String> {
-    let local_app_data = std::env::var("LOCALAPPDATA")
-        .map_err(|_| "Failed to get LOCALAPPDATA".to_string())?;
-    
-    let app_path = std::path::Path::new(&local_app_data)
-        .join("SRY Studio")
-        .join("app.exe");
+fn launch_app(install_path: String) -> Result<(), String> {
+    let app_path = std::path::Path::new(&install_path)
+        .join("SRY Studio.exe");
 
-    if !app_path.exists() {
-        return Err("Application not found at installation path".into());
-    }
+    let target_exe = if app_path.exists() {
+        app_path
+    } else {
+        let fallback_path = std::path::Path::new(&install_path).join("app.exe");
+        if fallback_path.exists() {
+            fallback_path
+        } else {
+            return Err(format!("Application not found at installation path: {}", install_path));
+        }
+    };
 
-    Command::new(&app_path)
+    Command::new(&target_exe)
         .spawn()
         .map_err(|e| format!("Failed to launch app: {}", e))?;
 
@@ -62,7 +65,7 @@ fn launch_app() -> Result<(), String> {
 
 #[cfg(not(target_os = "windows"))]
 #[tauri::command]
-fn launch_app() -> Result<(), String> {
+fn launch_app(_install_path: String) -> Result<(), String> {
     Err("Launching is only supported on Windows".to_string())
 }
 

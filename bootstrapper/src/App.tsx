@@ -64,7 +64,7 @@ function App() {
 
   const handleLaunch = async () => {
     try {
-      await invoke("launch_app");
+      await invoke("launch_app", { installPath });
     } catch (e) {
       setError(String(e));
     }

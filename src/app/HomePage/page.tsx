@@ -18,8 +18,9 @@ export default function HomePage() {
   const [showOnboarding, setShowOnboarding] = useState<boolean | null>(null);
 
   useEffect(() => {
+    const isMac = /Mac/i.test(navigator.userAgent);
     const firstLaunch = localStorage.getItem("firstLaunchDone");
-    if (!firstLaunch) {
+    if (isMac && !firstLaunch) {
       setShowOnboarding(true);
     } else {
       setShowOnboarding(false);
