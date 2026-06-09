@@ -45,7 +45,7 @@ function App() {
 
     try {
       if ((window as any).__TAURI_INTERNALS__) {
-        await invoke("install_app");
+        await invoke("install_app", { installPath });
       } else {
         await new Promise((resolve) => setTimeout(resolve, 5000));
       }
@@ -75,6 +75,17 @@ function App() {
       await invoke("close_app");
     } catch (e) {
       console.error(e);
+    }
+  };
+
+  const handleBrowse = async () => {
+    try {
+      const selected = await invoke<string | null>("select_directory");
+      if (selected) {
+        setInstallPath(selected);
+      }
+    } catch (e) {
+      console.error("Failed to select directory:", e);
     }
   };
 
@@ -231,7 +242,7 @@ function App() {
                         className="flex-1 bg-surface-container-low/50 border border-outline-variant/30 rounded-xl px-3 py-2 text-xs font-mono text-on-surface outline-none focus:border-primary/50 transition-colors"
                       />
                       <button
-                        onClick={() => { }} // Browse is decorative/typeable for tauri configurations
+                        onClick={handleBrowse}
                         className="px-3.5 py-2 bg-transparent border border-outline-variant text-on-surface rounded-xl hover:bg-surface-container-high text-xs font-medium transition-colors cursor-pointer"
                       >
                         Browse...
