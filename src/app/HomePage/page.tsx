@@ -19,8 +19,9 @@ export default function HomePage() {
 
   useEffect(() => {
     const isMac = /Mac/i.test(navigator.userAgent);
+    const isDesktop = !!(window as any).__TAURI_INTERNALS__ || !!(window as any).__TAURI__;
     const firstLaunch = localStorage.getItem("firstLaunchDone");
-    if (isMac && !firstLaunch) {
+    if (isMac && isDesktop && !firstLaunch) {
       setShowOnboarding(true);
     } else {
       setShowOnboarding(false);
@@ -334,9 +335,47 @@ export default function HomePage() {
               <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>notifications</span>
             </div>
 
-            {/* Static Profile */}
-            <div className="relative text-on-surface-variant">
-              <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>person</span>
+            {/* Profile Dropdown */}
+            <div className="relative">
+              <button 
+                onClick={() => setProfileMenuOpen(!profileMenuOpen)} 
+                className="relative text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer flex items-center justify-center p-1.5 rounded-full border-none bg-transparent"
+              >
+                <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>person</span>
+              </button>
+              {profileMenuOpen && (
+                <>
+                  <div 
+                    className="fixed inset-0 z-40" 
+                    onClick={() => setProfileMenuOpen(false)}
+                  />
+                  <div className="absolute right-0 mt-2 w-48 bg-white border border-zinc-200 rounded-xl shadow-lg z-50 p-2 text-left animate-in fade-in slide-in-from-top-1 duration-150">
+                    <div className="px-3 py-2 text-xs font-semibold text-zinc-500 border-b border-zinc-105 truncate mb-1">
+                      {typeof window !== 'undefined' ? localStorage.getItem('user_email') || 'User' : 'User'}
+                    </div>
+                    <button
+                      onClick={async () => {
+                        const isDesktop = !!(window as any).__TAURI_INTERNALS__ || !!(window as any).__TAURI__;
+                        if (isDesktop) {
+                          try {
+                            const { invoke } = await import('@tauri-apps/api/core');
+                            await invoke('clear_tokens');
+                          } catch (err) {
+                            console.error('Failed to clear keychain tokens:', err);
+                          }
+                        }
+                        localStorage.removeItem('access_token');
+                        localStorage.removeItem('user_email');
+                        window.location.reload();
+                      }}
+                      className="w-full text-left px-3 py-2 text-xs font-bold text-red-500 hover:bg-red-50 rounded-lg transition-colors flex items-center gap-2 cursor-pointer border-none bg-transparent"
+                    >
+                      <span className="material-symbols-outlined text-[16px]">logout</span>
+                      Log Out
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </header>
