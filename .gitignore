@@ -45,4 +45,7 @@ next-env.d.ts
 /html_test
 /image_test
 /screen_meta.json
+**/screen.html
+**/screen_refresh.html
+
 
