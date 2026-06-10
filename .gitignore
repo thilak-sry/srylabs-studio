@@ -39,3 +39,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# MCP / Agent work files
+/*.html
+/html_test
+/image_test
+/screen_meta.json
+
